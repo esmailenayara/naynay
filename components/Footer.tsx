@@ -10,7 +10,7 @@ export function Footer() {
   return (
     <footer className="border-t border-line bg-[#2f241e] text-[#e9dccd] pb-24 md:pb-0">
       <div className="mx-auto max-w-6xl px-4 py-12 text-[0.9375rem] text-[#d9c9b6] sm:px-6">
-        {/* Logo horizontal da Dra. (só no computador: no celular as letras ficariam pequenas demais). */}
+        {/* Logo horizontal completo da Dra. (computador). */}
         <Image
           src="/images/logo-horizontal-bege.png"
           alt={`${CLINICA.nome}: ${CLINICA.descritor}`}
@@ -19,12 +19,16 @@ export function Footer() {
           className="mx-auto mb-12 hidden h-auto w-full max-w-2xl md:block"
           loading="lazy"
         />
+        {/* No celular: só o nome do logo em imagem (ocupando a largura) e a frase em texto, para ficar legível. */}
+        <div className="mb-10 md:hidden">
+          <Image src="/images/logo-nome-bege.png" alt={CLINICA.nome} width={820} height={44} className="h-auto w-full" loading="lazy" />
+          <p className="mt-3 text-center text-[0.625rem] uppercase tracking-[0.3em] text-[#d9c9b6]">{CLINICA.descritor}</p>
+        </div>
         <p className="rounded-xl bg-white/10 p-4 text-white">{AVISO_RESULTADOS}</p>
 
         <div className="mt-10 grid gap-8 md:grid-cols-3">
           <div>
             <p className="text-lg font-light uppercase tracking-[0.22em] text-white">{CLINICA.nome}</p>
-            <p className="text-xs uppercase tracking-[0.18em]">{CLINICA.descritor}</p>
             <p className="mt-3">Responsável técnica: {nomeProfissional()}</p>
             <p>Profissional autônoma</p>
           </div>
