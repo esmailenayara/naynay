@@ -11,7 +11,8 @@ export const CLINICA = {
   nome: "Dra. Nayara Esmaile",
   descritor: "Harmonização Facial e Estética Avançada",
   // Identificação usada nas páginas legais (controladora dos dados, LGPD).
-  responsavelLegal: "Nayara Esmaile, profissional autônoma",
+  // Sem "responsável técnica" nem "profissional autônoma" no site (pedido da Dra.).
+  responsavelLegal: "Nayara Esmaile",
   email: "esmaile.nayara@gmail.com",
 };
 

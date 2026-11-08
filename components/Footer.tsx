@@ -1,6 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
-import { CLINICA, CONTATO, LOCAIS, enderecoCompleto, linkWhatsApp, nomeProfissional } from "@/lib/site";
+import { CLINICA, CONTATO, LOCAIS, enderecoCompleto, linkWhatsApp } from "@/lib/site";
 import { MENSAGEM_WHATSAPP_PADRAO } from "@/lib/terms";
 import { AVISO_RESULTADOS } from "@/lib/terms";
 import { CookiePrefsButton } from "./CookiePrefsButton";
@@ -29,8 +29,6 @@ export function Footer() {
         <div className="mt-10 grid gap-8 md:grid-cols-3">
           <div>
             <p className="text-lg font-light uppercase tracking-[0.22em] text-white">{CLINICA.nome}</p>
-            <p className="mt-3">Responsável técnica: {nomeProfissional()}</p>
-            <p>Profissional autônoma</p>
           </div>
 
           <div>
