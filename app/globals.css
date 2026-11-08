@@ -1,0 +1,84 @@
+@import "tailwindcss";
+
+/*
+ * Paleta marrom e bege (em uso).
+ *   café #4A3428 (botões) · caramelo #9C7556 (2ª linha dos títulos) · bege #F7F2EB (fundo) · areia #EFE6DA
+ * Paleta alternativa (mais clara): botões #7A5A45, caramelo #B08B6E, fundo #FAF6F0.
+ * Para trocar, altere só as variáveis abaixo. Contraste AA conferido para texto sobre bege/areia.
+ */
+:root {
+  --bg: #f7f2eb;
+  --bg-soft: #efe6da;
+  --surface: #fffcf7;
+  --ink: #2f241e;
+  --ink-soft: #5f5046;
+  --line: #e3d7c8;
+  --brand: #4a3428;
+  --brand-strong: #34241b;
+  --brand-tint: #eadfd1;
+  /* Destaques (2ª linha dos títulos, números, ícones): café, igual aos botões (escolha da Dra.). Antes era caramelo #9c7556. */
+  --accent: #4a3428;
+  /* Tom escuro do cabeçalho e do topo. */
+  --dark: #1c0908;
+  /* Botões: café, o mesmo tom dos destaques. */
+  --botao: #4a3428;
+  --botao-hover: #34241b;
+  --whatsapp: #6b4e3d;
+  --whatsapp-strong: #573e30;
+}
+
+@theme inline {
+  --color-bg: var(--bg);
+  --color-bg-soft: var(--bg-soft);
+  --color-surface: var(--surface);
+  --color-ink: var(--ink);
+  --color-ink-soft: var(--ink-soft);
+  --color-line: var(--line);
+  --color-brand: var(--brand);
+  --color-brand-strong: var(--brand-strong);
+  --color-brand-tint: var(--brand-tint);
+  --color-accent: var(--accent);
+  --color-dark: var(--dark);
+  --color-botao: var(--botao);
+  --color-botao-hover: var(--botao-hover);
+  --color-whatsapp: var(--whatsapp);
+  --color-whatsapp-strong: var(--whatsapp-strong);
+  --font-sans: var(--font-jost);
+}
+
+html {
+  scroll-behavior: smooth;
+  scroll-padding-top: 6rem;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+}
+
+body {
+  background: var(--bg);
+  color: var(--ink);
+  font-size: 1.0625rem;
+  line-height: 1.7;
+}
+
+:focus-visible {
+  outline: 3px solid var(--accent);
+  outline-offset: 3px;
+  border-radius: 6px;
+}
+
+h1,
+h2,
+h3 {
+  font-weight: 300;
+  line-height: 1.15;
+  letter-spacing: -0.01em;
+  text-wrap: balance;
+}
+
+details > summary::-webkit-details-marker {
+  display: none;
+}
