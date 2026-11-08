@@ -7,5 +7,10 @@
     "directory": "./out",
     "not_found_handling": "404-page",
     "html_handling": "auto-trailing-slash"
-  }
+  },
+  // Domínio próprio (a zona dranayaraesmaile.com.br precisa estar ativa na Cloudflare).
+  "routes": [
+    { "pattern": "dranayaraesmaile.com.br", "custom_domain": true },
+    { "pattern": "www.dranayaraesmaile.com.br", "custom_domain": true }
+  ]
 }
