@@ -43,11 +43,16 @@ export const PASSOS = [
 ];
 
 export const SOBRE = {
-  // Textos enviados pela própria Dra. (já confirmados).
+  // Textos enviados pela própria Dra. (já confirmados). "Mais de 500 pacientes" é número informado por ela; manter atualizado.
   paragrafos: [
     {
       texto:
-        "O lema da Dra. Nayara Esmaile é naturalidade e elegância: realçar o que já é seu e cuidar, com delicadeza, dos sinais que o tempo deixou.",
+        "A Dra. Nayara Esmaile une conhecimento técnico, estudo constante e um olhar sensível para indicar o que faz sentido para cada rosto. Antes de qualquer procedimento, ela dedica tempo para ouvir o que você deseja, observar as suas características e explicar com clareza as opções, os cuidados e o que é possível em cada caso.",
+      confirmado: true,
+    },
+    {
+      texto:
+        "O trabalho dela valoriza a identidade de cada paciente: a busca é por harmonia, sem exageros e coerente com quem você é. Já atendeu mais de 500 pacientes na Tijuca e na Barra da Tijuca.",
       confirmado: true,
     },
   ],

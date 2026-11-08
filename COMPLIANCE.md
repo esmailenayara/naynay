@@ -44,6 +44,7 @@ Ao montar a página, consultei os dois perfis públicos do Google enviados. Eles
 | 5 estrelas nos depoimentos (08/11) | Cinco estrelas abaixo de "Veja os depoimentos e as fotos publicados no Google", sem contagem | É a nota real do perfil (5,0 com 89 avaliações em 08/11/2026). **Se a nota cair, atualizar ou remover**, senão vira informação falsa. Não foi colocada nota nos dados estruturados (o Google proíbe nota do próprio site ali). |
 | Depoimentos escolhidos pela Dra. (08/11) | Karla Luiza Pascual, Juscelia Silva e Ana Lívia Carvalho, com 5 estrelas e o nome | No da Juscelia, o trecho que citava a marca foi trocado por "(…)". |
 | Instagram no rodapé (08/11) | Link discreto para @nayaraesmaile na coluna Contato | O perfil tem posts com marca e antes e depois; fica no rodapé, longe dos botões principais. |
+| "Mais de 500 pacientes" (08/11) | Número informado pela Dra., no texto "Sobre a Dra." | Usado "atendidas/atendeu" em vez de "satisfeitas": número de atendimentos é comprovável; satisfação não. Precisa ser verdadeiro e atualizado. |
 | "apenas" fora do aviso | Aviso agora: "Todo procedimento é indicado após consulta individual com a profissional. Os resultados variam de pessoa para pessoa." | — |
 
 ---
