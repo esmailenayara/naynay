@@ -70,7 +70,17 @@ Metas → Conversões → Nova ação → Site → configurar manualmente. Crie 
 ### Remarketing: desligado de propósito
 Saúde é categoria sensível nas políticas de publicidade personalizada do Google. O código envia `allow_ad_personalization_signals: false`, `ad_personalization: denied` e `allow_google_signals: false`. **Não** crie públicos de remarketing nem "segmentos de dados" a partir deste site na conta do Google Ads.
 
-## Deploy
+## Publicar alterações (dia a dia)
+
+O site está na Cloudflare (Workers, só arquivos estáticos), no domínio **dranayaraesmaile.com.br**. Depois de alterar e conferir no `npm run dev`:
+
+```bash
+npm run publicar
+```
+
+Isso gera a versão final e envia para a Cloudflare em cerca de um minuto. Se pedir login, rode `npx wrangler login` e clique em **Allow** no navegador (conta esmaile.nayara@gmail.com).
+
+## Deploy (configuração inicial, já feita)
 
 ### Opção A — Vercel (o que foi pedido)
 1. Suba a pasta para um repositório no GitHub.
