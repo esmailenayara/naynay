@@ -1,0 +1,11 @@
+{
+  // Site 100% estático: a Cloudflare só serve os arquivos da pasta out/ (gerada por `npm run build`).
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "dranayaraesmaile",
+  "compatibility_date": "2026-11-01",
+  "assets": {
+    "directory": "./out",
+    "not_found_handling": "404-page",
+    "html_handling": "auto-trailing-slash"
+  }
+}
