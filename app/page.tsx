@@ -4,6 +4,7 @@ import { Footer } from "@/components/Footer";
 import { Header } from "@/components/Header";
 import { JsonLd } from "@/components/JsonLd";
 import { Contato } from "@/components/Contato";
+import { Divisor } from "@/components/Divisor";
 import { MobileBar } from "@/components/MobileBar";
 import { Comentarios, Procedimentos } from "@/components/Procedimentos";
 import { ComoFunciona, Compromisso, Expectativas, Faixa, Hero, Sobre } from "@/components/Secoes";
@@ -23,9 +24,11 @@ export default function Home() {
         <Compromisso />
         <Procedimentos />
         <Expectativas />
+        <Divisor />
         <Comentarios />
         <Locais />
         <Contato />
+        <Divisor />
         <Faq />
       </main>
       <Footer />
