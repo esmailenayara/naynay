@@ -1,5 +1,5 @@
 import { CONTATO, LOCAIS, linkWhatsApp } from "@/lib/site";
-import { AVISO_RESULTADOS, MENSAGEM_WHATSAPP_PADRAO, mensagemWhatsAppLocal } from "@/lib/terms";
+import { AVISO_RESULTADOS, MENSAGEM_WHATSAPP_PADRAO } from "@/lib/terms";
 import { ButtonLink } from "./Button";
 import { IconWhatsApp } from "./Icons";
 import { Titulo } from "./Section";
@@ -31,7 +31,7 @@ export function Contato() {
             {LOCAIS.map((u) => (
               <ButtonLink
                 key={u.id}
-                href={linkWhatsApp(mensagemWhatsAppLocal(u.prep))}
+                href={linkWhatsApp(MENSAGEM_WHATSAPP_PADRAO)}
                 externo
                 data-conv="whatsapp"
                 aria-label={`Agendar ${u.prep} pelo WhatsApp (abre em nova aba)`}

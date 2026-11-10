@@ -33,7 +33,6 @@ export const SEO = {
     "Agende pelo WhatsApp sua consulta avaliativa com a Dra. Nayara Esmaile, com atendimento na Tijuca e na Barra da Tijuca, no Rio de Janeiro. Harmonização facial com naturalidade e elegância.",
 };
 
-export const MENSAGEM_WHATSAPP_PADRAO = "Olá! Gostaria de agendar uma consulta.";
+// Mensagem única de todos os botões do WhatsApp (pedido da Dra., 10/11/2026).
+export const MENSAGEM_WHATSAPP_PADRAO = "Olá, vim do Google e gostaria de tirar algumas dúvidas";
 
-// `prep` = bairro com preposição, ex.: "na Tijuca".
-export const mensagemWhatsAppLocal = (prep: string) => `Olá! Gostaria de agendar uma consulta ${prep}.`;

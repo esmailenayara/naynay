@@ -1,5 +1,5 @@
 import { LOCAIS, enderecoMapa, linkComoChegar, linkWhatsApp } from "@/lib/site";
-import { mensagemWhatsAppLocal } from "@/lib/terms";
+import { MENSAGEM_WHATSAPP_PADRAO } from "@/lib/terms";
 import { ButtonLink } from "./Button";
 import { IconPin, IconWhatsApp } from "./Icons";
 import { Mapa } from "./Mapa";
@@ -40,7 +40,7 @@ export function Locais() {
 
             <div className="mt-6 px-2 sm:px-3">
               <ButtonLink
-                href={linkWhatsApp(mensagemWhatsAppLocal(u.prep))}
+                href={linkWhatsApp(MENSAGEM_WHATSAPP_PADRAO)}
                 externo
                 data-conv="whatsapp"
                 className="w-full"
