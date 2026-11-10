@@ -3,7 +3,7 @@
 Página única para receber tráfego de Google Ads (rede de Pesquisa). Objetivo: levar a pessoa a agendar a consulta **pelo WhatsApp**, único canal de contato (sem formulário e sem ligação).
 
 - Next.js 16 (App Router) + TypeScript + Tailwind 4, **exportação 100% estática** (pasta `out/`, sem servidor).
-- Contato só pelo WhatsApp: todos os botões abrem a conversa com uma mensagem pronta ("Olá! Gostaria de agendar uma consulta na unidade …"). Atendimento humanizado feito pela equipe.
+- Contato só pelo WhatsApp: todos os botões abrem a conversa com a mensagem "Olá, vim do Google e gostaria de tirar algumas dúvidas". Atendimento humanizado feito pela equipe.
 - Antes de mexer em qualquer texto, leia [COMPLIANCE.md](COMPLIANCE.md). O que falta preencher está em [PLACEHOLDERS.md](PLACEHOLDERS.md).
 
 ## Rodar no computador
@@ -24,7 +24,7 @@ Para gerar um link de **revisão** com tudo visível (para ela ler os textos no 
 
 | O quê | Arquivo |
 |---|---|
-| Razão social, CNPJ, e-mail, formação, endereços, horários, WhatsApp | `lib/site.ts` |
+| Nome, e-mail, formação, endereços, WhatsApp, Instagram, perfil do Google | `lib/site.ts` |
 | Termos neutros, título, subtítulo, aviso de resultados, mensagem do WhatsApp, SEO | `lib/terms.ts` |
 | Faixa de fatos, passos, "Sobre a Dra.", "O que esperar", FAQ | `lib/conteudo.ts` |
 | Procedimentos (perguntas e respostas) e avaliações do Google | `lib/procedimentos.ts` |
@@ -57,7 +57,7 @@ Como o site é estático, as fotos não são otimizadas automaticamente. Antes d
 
 | Variável | Para quê |
 |---|---|
-| `NEXT_PUBLIC_SITE_URL` | URL final, ex.: `https://www.nayaraesmaile.com.br` (canonical, sitemap, og). **Obrigatória antes do build de produção.** |
+| `NEXT_PUBLIC_SITE_URL` | URL final, `https://dranayaraesmaile.com.br` (canonical, sitemap, og). **Obrigatória antes do build de produção.** |
 | `NEXT_PUBLIC_GADS_ID` | ID do Google Ads (`AW-XXXXXXXXXX`). Vazio = nenhum script do Google carrega. |
 | `NEXT_PUBLIC_GADS_CONV_WHATSAPP` | Rótulo da conversão "Clique no WhatsApp". |
 | `NEXT_PUBLIC_MOSTRAR_RASCUNHO` | `1` só em deploy de revisão: mostra textos ainda não confirmados. **Vazio no site oficial.** |
@@ -80,26 +80,14 @@ npm run publicar
 
 Isso gera a versão final e envia para a Cloudflare em cerca de um minuto. Se pedir login, rode `npx wrangler login` e clique em **Allow** no navegador (conta esmaile.nayara@gmail.com).
 
-## Deploy (configuração inicial, já feita)
+## Hospedagem (configuração já feita)
 
-### Opção A — Vercel (o que foi pedido)
-1. Suba a pasta para um repositório no GitHub.
-2. Em vercel.com → Add New → Project → importe o repositório. O framework é detectado como Next.js; não precisa mudar nada.
-3. Em Settings → Environment Variables, cadastre as variáveis acima e faça o deploy.
-4. Em Settings → Domains, adicione `nayaraesmaile.com.br` e `www.nayaraesmaile.com.br` e siga as instruções de DNS (registro A para o domínio raiz e CNAME para o `www`). O HTTPS é emitido sozinho.
-
-> Sim, com domínio próprio o endereço fica só `www.seudominio.com.br`; o `vercel.app` só existe como endereço técnico secundário. **Atenção:** o plano gratuito (Hobby) da Vercel é, pelos termos dela, para uso pessoal e não comercial. Para uma clínica, o correto é o plano Pro **ou** usar a opção B, que é gratuita para uso comercial.
-
-### Opção B — Cloudflare Pages (gratuito, uso comercial permitido)
-1. dash.cloudflare.com → Workers & Pages → Create → Pages → conecte o GitHub.
-2. Build command: `npm run build` · Output directory: `out` · cadastre as variáveis em Settings → Environment variables.
-3. Custom domains → adicione o domínio. Se o DNS estiver na Cloudflare, é automático; senão, siga o CNAME indicado.
-
-### Domínio
-Registre em [registro.br](https://registro.br) um domínio coerente com o nome da clínica (ex.: `nayaraesmaile.com.br`). Use o **mesmo domínio** como URL final no anúncio. Não use encurtadores nem redirecionamentos.
+- Cloudflare Workers com arquivos estáticos (`wrangler.jsonc`), conta esmaile.nayara@gmail.com. Domínios próprios: `dranayaraesmaile.com.br` e `www.dranayaraesmaile.com.br` (registro.br, pago até 08/11/2030, DNS na Cloudflare).
+- Não use OpenNext nem Cloudflare Pages: se o wrangler oferecer migrar ou configurar automaticamente, recuse.
+- Falta ligar **Always Use HTTPS** no painel (SSL/TLS → Edge Certificates).
 
 ## Checklist técnico depois do deploy
-- [ ] Abrir no celular e tocar em cada botão de agendar: o WhatsApp abre com a mensagem certa (geral e de cada unidade).
+- [ ] Abrir no celular e tocar em cada botão de agendar: o WhatsApp abre com a mensagem certa.
 - [ ] Google Ads → Conversões: a ação "Clique no WhatsApp" sai de "Não verificado" depois dos primeiros testes.
 - [ ] PageSpeed Insights (pagespeed.web.dev), versão mobile: ≥ 90 em Desempenho, Acessibilidade e SEO.
-- [ ] `https://seudominio/sitemap.xml` e `/robots.txt` abrindo.
+- [ ] `https://dranayaraesmaile.com.br/sitemap.xml` e `/robots.txt` abrindo.
