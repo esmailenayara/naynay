@@ -46,6 +46,7 @@ Ao montar a página, consultei os dois perfis públicos do Google enviados. Eles
 | Instagram no rodapé (08/11) | Link discreto para @nayaraesmaile na coluna Contato | O perfil tem posts com marca e antes e depois; fica no rodapé, longe dos botões principais. |
 | "Mais de 500 pacientes" (08/11) | Número informado pela Dra., no texto "Sobre a Dra." | Usado "atendidas/atendeu" em vez de "satisfeitas": número de atendimentos é comprovável; satisfação não. Precisa ser verdadeiro e atualizado. |
 | Sem "responsável técnica" e "profissional autônoma" (08/11) | Saíram do rodapé e das páginas legais; a identificação é "Dra. Nayara Esmaile" / "Nayara Esmaile" + e-mail + WhatsApp + endereços | — |
+| Ajustes de conversão (12/11) | Título do topo com "Harmonização facial"; botão do topo virou "Tirar dúvidas pelo WhatsApp" (igual à mensagem pronta); as abas "Preenchimento facial" e "Bioestimulação de colágeno" viraram "Contorno e volume do rosto" e "Firmeza da pele" | O suporte do Google informou por e-mail que preenchedores e bioestimuladores não podem ser promovidos nem na página de destino. Não voltar com esses nomes. Os demais botões continuam "Agendar". |
 | "apenas" fora do aviso | Aviso agora: "Todo procedimento é indicado após consulta individual com a profissional. Os resultados variam de pessoa para pessoa." | — |
 
 ---
@@ -84,7 +85,7 @@ Ao montar a página, consultei os dois perfis públicos do Google enviados. Eles
 | Política de Privacidade (LGPD) e Termos de Uso no rodapé | Textos-base completos com trechos `[PREENCHER]` | `app/politica-de-privacidade`, `app/termos-de-uso` |
 | Sem pop-ups, redirecionamentos, autoplay, botões enganosos ou rolagem infinita | Nenhum modal, mesmo com o visual da referência (que tem pop-up de desconto). Mapa carrega ao rolar até ele. O aviso de cookies é uma faixa discreta que não bloqueia a página. Não há vídeo/áudio. O WhatsApp abre só no clique | — |
 | Cookies só com o necessário | Duas opções (Recusar/Aceitar). Consent Mode v2 começa negado. Link "Preferências de cookies" no rodapé | `components/CookieBanner.tsx`, `lib/gtag.ts` |
-| Conteúdo bate com o anúncio | Foco único: consulta avaliativa + agendamento pelo WhatsApp. H1 = "Consulta avaliativa individualizada na Tijuca e na Barra da Tijuca" | `lib/terms.ts` (HERO) |
+| Conteúdo bate com o anúncio | Foco único: consulta avaliativa + agendamento pelo WhatsApp. H1 = "Harmonização facial com consulta avaliativa na Tijuca e na Barra da Tijuca" (12/11/2026: "harmonização facial" subiu para o título, porque é o que o anúncio promete) | `lib/terms.ts` (HERO) |
 | Metatags honestas, canonical, robots, sitemap | `title`, `description`, `og`, `canonical` por página. `robots.txt` libera tudo. `sitemap.xml` com as 3 páginas públicas | `app/layout.tsx`, `app/robots.ts`, `app/sitemap.ts` |
 | HTTPS | Automático na Vercel/Cloudflare | README |
 | Coleta mínima de dados | Não há formulário: o site não pede nenhum dado pessoal. O contato é só pelo WhatsApp | `components/Contato.tsx` |

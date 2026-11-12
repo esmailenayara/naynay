@@ -58,8 +58,8 @@ export const PROCEDIMENTOS: Procedimento[] = [
     confirmado: true,
   },
   {
-    id: "preenchimento",
-    nome: "Preenchimento facial",
+    id: "contorno",
+    nome: "Contorno e volume do rosto",
     resumo:
       "Reposição de volume ou definição de contornos em áreas específicas do rosto, como lábios, olheiras, malar e mandíbula. Produto, área e quantidade são indicados após a consulta.",
     perguntas: [
@@ -74,10 +74,10 @@ export const PROCEDIMENTOS: Procedimento[] = [
     confirmado: true,
   },
   {
-    id: "bioestimulacao",
-    nome: "Bioestimulação de colágeno",
+    id: "firmeza",
+    nome: "Firmeza da pele",
     resumo:
-      "Técnicas que estimulam a pele a produzir o próprio colágeno ao longo das semanas seguintes. O número de sessões e o intervalo entre elas são definidos na consulta.",
+      "Técnicas voltadas à firmeza e à sustentação da pele do rosto, com resposta gradual ao longo das semanas seguintes. O número de sessões e o intervalo entre elas são definidos na consulta.",
     perguntas: [
       { pergunta: "Quando dá para perceber diferença?", resposta: "A resposta é gradual e varia de pessoa para pessoa. A profissional explica o que esperar no seu caso." },
       { pergunta: "Quantas sessões são necessárias?", resposta: "Depende do estado da sua pele e dos seus objetivos. Não existe um número fixo para todo mundo." },

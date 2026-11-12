@@ -11,7 +11,7 @@ export const TERMOS = {
   areas: [
     "Harmonização facial",
     "Rejuvenescimento facial",
-    "Bioestimulação",
+    "Firmeza da pele",
     "Cuidados com a pele do rosto",
   ],
 };
@@ -21,16 +21,16 @@ export const AVISO_RESULTADOS =
 
 export const HERO = {
   // O título aparece em duas linhas: `titulo` (branco) e `destaque` (caramelo).
-  titulo: "Consulta avaliativa individualizada",
+  titulo: "Harmonização facial com consulta avaliativa",
   destaque: "na Tijuca e na Barra da Tijuca.",
   subtitulo:
-    "Harmonização facial e estética avançada com a Dra. Nayara Esmaile. Uma consulta dedicada a entender o seu rosto e indicar o tratamento adequado para você.",
+    "Estética avançada com a Dra. Nayara Esmaile. Uma consulta dedicada a entender o seu rosto e indicar o tratamento adequado para você.",
 };
 
 export const SEO = {
-  titulo: "Consulta avaliativa facial na Tijuca e na Barra da Tijuca | Dra. Nayara Esmaile",
+  titulo: "Harmonização facial na Tijuca e na Barra da Tijuca | Dra. Nayara Esmaile",
   descricao:
-    "Agende pelo WhatsApp sua consulta avaliativa com a Dra. Nayara Esmaile, com atendimento na Tijuca e na Barra da Tijuca, no Rio de Janeiro. Harmonização facial com naturalidade e elegância.",
+    "Harmonização facial com naturalidade e elegância. Tire suas dúvidas e agende pelo WhatsApp sua consulta avaliativa com a Dra. Nayara Esmaile, na Tijuca e na Barra da Tijuca, no Rio de Janeiro.",
 };
 
 // Mensagem única de todos os botões do WhatsApp (pedido da Dra., 10/11/2026).

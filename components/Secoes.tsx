@@ -43,9 +43,9 @@ export function Hero() {
             externo
             data-conv="whatsapp"
             variante="claro"
-            aria-label="Agendar minha consulta pelo WhatsApp (abre em nova aba)"
+            aria-label="Tirar dúvidas pelo WhatsApp (abre em nova aba)"
           >
-            <IconWhatsApp /> Agendar minha consulta
+            <IconWhatsApp /> Tirar dúvidas pelo WhatsApp
           </ButtonLink>
           <ButtonLink href="#locais" variante="vidro">
             Locais de atendimento
