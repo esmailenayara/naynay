@@ -2,7 +2,7 @@ import { linkWhatsApp } from "@/lib/site";
 import { MENSAGEM_WHATSAPP_PADRAO } from "@/lib/terms";
 import { IconWhatsApp } from "./Icons";
 
-/** Barra fixa no rodapé, só no celular. O agendamento é só pelo WhatsApp. */
+/** Barra fixa no rodapé, só no celular. O contato é só pelo WhatsApp; o texto combina com a mensagem pronta ("tirar dúvidas"). */
 export function MobileBar() {
   return (
     <nav
@@ -16,7 +16,7 @@ export function MobileBar() {
         data-conv="whatsapp"
         className="flex min-h-12 items-center justify-center gap-2 rounded-full bg-botao font-medium text-white"
       >
-        <IconWhatsApp /> Agendar pelo WhatsApp
+        <IconWhatsApp /> Tirar dúvidas pelo WhatsApp
       </a>
     </nav>
   );

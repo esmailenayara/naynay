@@ -21,10 +21,12 @@ export const AVISO_RESULTADOS =
 
 export const HERO = {
   // O título aparece em duas linhas: `titulo` (branco) e `destaque` (caramelo).
+  // Linha pequena acima do título. Não repetir "harmonização facial", que já está no título.
+  kicker: "Estética avançada",
   titulo: "Harmonização facial com consulta avaliativa",
   destaque: "na Tijuca e na Barra da Tijuca.",
   subtitulo:
-    "Estética avançada com a Dra. Nayara Esmaile. Uma consulta dedicada a entender o seu rosto e indicar o tratamento adequado para você.",
+    "Uma consulta com a Dra. Nayara Esmaile, dedicada a entender o seu rosto e indicar o tratamento adequado para você.",
 };
 
 export const SEO = {

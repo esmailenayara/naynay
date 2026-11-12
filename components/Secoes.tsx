@@ -32,7 +32,7 @@ export function Hero() {
           as="h1"
           id="hero-titulo"
           claro
-          kicker={CLINICA.descritor}
+          kicker={HERO.kicker}
           titulo={HERO.titulo}
           destaque={HERO.destaque}
         />
