@@ -53,9 +53,9 @@ case $modo in
     fala=$1 img=$2 saida=$3 DUR=${4:-5}; FR=${FRENTE:-0}
     ins="$(entrada "$fala") $(entrada "$img") -loop 1 -i $M/metade.png"
     fc="color=black:s=1080x1920:r=30[preto];
-        [0:v]$(cobrir 1080 1260),$COR[baixo];
+        [0:v]$(cobrir 1080 1160),$COR[baixo];
         [1:v]$(cobrir 1080 860),$COR,format=rgba[c];[2:v]format=gray[m];[c][m]alphamerge[cima];
-        [preto][baixo]overlay=0:660:shortest=1[f1];[f1][cima]overlay=0:0[f2]"
+        [preto][baixo]overlay=0:760:shortest=1[f1];[f1][cima]overlay=0:0[f2]"
     [ "$FR" = 1 ] && { echo "FRENTE=1 não se aplica ao modo metade (a pessoa já fica abaixo da imagem)"; FR=0; } ;;
   *) echo "modo desconhecido: $modo"; exit 1 ;;
 esac
