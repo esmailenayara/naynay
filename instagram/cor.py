@@ -99,27 +99,45 @@ def main():
         json.dump(medir(px), open(ALVO, "w")); print("alvo gravado:", ALVO, "\n ", resumo(px)); return
     alvo = json.load(open(ALVO))
     os.makedirs(a.saida, exist_ok=True)
+    cube = os.path.join(os.path.abspath(a.saida), "cor.cube")
     px = quadros(a.video, f"{a.recorte},{EFEITOS}", 24, a.inicio, a.fim)
     lut = curvas(medir(px), alvo)
-    # ajuste fino de saturação: procura o fator que iguala a saturação do alvo
     sat = 1.0
-    for _ in range(12):
-        s = saturacao(aplicar(px, lut, sat) / 255); sat *= (alvo["sat"] / max(s, 1e-4)) ** 0.8
-    # calibrado no teste 1: o eq do ffmpeg (YUV de faixa limitada) satura ~5% a mais que a conta acima
-    sat = float(np.clip(sat * 0.95, 0.6, 1.6))
-    cube = os.path.join(os.path.abspath(a.saida), "cor.cube")
-    with open(cube, "w") as f:
-        f.write("TITLE \"cor aprovada\"\nLUT_1D_SIZE 256\n")
-        for v in lut / 255: f.write(f"{v[0]:.6f} {v[1]:.6f} {v[2]:.6f}\n")
-    filtro = f"{EFEITOS},lut1d=file='{cube}',format=yuv420p,eq=saturation={sat:.3f}"
+    for _ in range(12):  # 1ª estimativa da saturação (conta em numpy)
+        s_ = saturacao(aplicar(px, lut, sat) / 255); sat *= (alvo["sat"] / max(s_, 1e-4)) ** 0.8
+
+    def gravar(lut, sat):
+        with open(cube, "w") as f:
+            f.write("TITLE \"cor aprovada\"\nLUT_1D_SIZE 256\n")
+            for v in np.clip(lut, 0, 255) / 255: f.write(f"{v[0]:.6f} {v[1]:.6f} {v[2]:.6f}\n")
+        return f"{EFEITOS},lut1d=file='{cube}',format=yuv420p,eq=saturation={sat:.3f}"
+
+    # REFINO COM O RESULTADO REAL: renderiza pelo ffmpeg, mede de novo e corrige o que sobrou
+    # (canal por canal: é isso que tira o puxado para o amarelo/azul). 5 rodadas.
+    for rodada in range(5):
+        filtro = gravar(lut, sat)
+        real = quadros(a.video, f"{a.recorte},{filtro}", 24, a.inicio, a.fim)
+        corr = curvas(medir(real), alvo)
+        lut = np.stack([np.interp(lut[:, c], np.arange(256), corr[:, c]) for c in range(3)], -1)
+        sat = float(np.clip(sat * (alvo["sat"] / max(saturacao(real / 255), 1e-4)), 0.6, 1.6))
+    filtro = gravar(lut, sat)
     open(os.path.join(a.saida, "cor-filtro.txt"), "w").write(filtro)
-    depois = aplicar(px, lut, sat)
-    alvo_px = None
-    print("ANTES :", resumo(px))
-    print("DEPOIS:", resumo(depois))
+    real = quadros(a.video, f"{a.recorte},{filtro}", 24, a.inicio, a.fim)
+
+    def faixas(q):  # média de cada canal nas sombras / meios-tons / luzes
+        q = np.array(q) / 255
+        return " ".join(f"{n}=({q[0][i:j].mean():.3f},{q[1][i:j].mean():.3f},{q[2][i:j].mean():.3f})"
+                        for n, i, j in (("sombra", 3, 20), ("meio", 40, 60), ("luz", 80, 97)))
+    print("ANTES :", resumo(px)); print("        RGB", faixas(medir(px)["q"]))
+    print("DEPOIS:", resumo(real)); print("        RGB", faixas(medir(real)["q"]))
     L = lambda q: 0.2126 * np.array(q[0]) + 0.7152 * np.array(q[1]) + 0.0722 * np.array(q[2])
     la = L(alvo["q"]) / 255
     print(f"ALVO  : preto {la[1]:.3f}  meio {la[49]:.3f}  branco {la[97]:.3f}  sat {alvo['sat']:.3f}")
+    print("        RGB", faixas(alvo["q"]))
+    dif = np.abs(np.array(medir(real)["q"]) - np.array(alvo["q"]))[:, 3:97].mean() / 255
+    ds = abs(saturacao(real / 255) - alvo["sat"])
+    ok = dif < 0.012 and ds < 0.015
+    print(f"diferença média para o alvo: {dif*100:.1f}%  saturação: {ds:.3f}  ->", "OK" if ok else "NÃO BATEU: investigue antes de editar")
     print("filtro gravado em", os.path.join(a.saida, "cor-filtro.txt"))
 
 

@@ -33,7 +33,10 @@ python3 -I instagram/cor.py ajustar <bruto.mov> <pasta>/cor --recorte "<mesmo en
 - O script lê 24 quadros do **original**, mede preto, meio-tom, branco, cor de cada canal (R, G, B) e
   saturação, e calcula a curva que leva **aquele** vídeo até a cor aprovada (casamento de histograma
   por canal + ajuste de saturação). O alvo medido da edição aprovada está em `instagram/cor-alvo.json`.
-- Ele imprime **ANTES / DEPOIS / ALVO**. O DEPOIS tem que bater com o ALVO: preto ~0,09–0,10,
+- Depois do cálculo, ele **renderiza de verdade pelo ffmpeg, mede de novo e corrige o que sobrou**
+  (5 rodadas), canal por canal. Na 1ª versão do método isso não existia, e o resultado puxou para o
+  amarelo; ela notou na hora. No fim ele escreve **OK** ou **NÃO BATEU**. Só siga com OK.
+- Ele imprime **ANTES / DEPOIS / ALVO**, com o RGB de sombras, meios-tons e luzes. O DEPOIS tem que bater com o ALVO: preto ~0,09–0,10,
   meio ~0,63, branco ~0,82, saturação ~0,21. Se não bater, não siga: investigue.
 - Testado: um vídeo dela escurecido e esfriado de propósito chegou no mesmo alvo.
 - Se a luz mudar muito **dentro** do mesmo arquivo (ex.: saiu do sol), rode por trecho com
@@ -117,6 +120,10 @@ Regras:
    - **Decisão dela (17/11/2026): o Claude faz tudo, inclusive escolher e colocar a música.**
      Use trilhas instrumentais livres de direitos para redes sociais, que combinem com o clima
      elegante (piano, cordas, lo-fi suave). Se ela mandar uma música específica, use a dela.
+   - **Mixagem sem cortar o fim (bug do teste 1):** a voz passa por `loudnorm`, que muda a taxa de
+     amostragem, e o `sidechaincompress` terminava o som 3 s antes do vídeo, cortando a última frase.
+     Sempre use `aresample=48000,apad=whole_dur=<duração>` na voz, `aresample=48000` na música e
+     `amix=...:duration=first`. **Confira que o áudio final tem a mesma duração do vídeo.**
 4. Vídeos sem fala (só imagens): música mais presente, cortes no ritmo da batida.
 
 ## 5. Cortes, transições e movimento
