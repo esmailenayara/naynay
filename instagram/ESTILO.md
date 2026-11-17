@@ -116,6 +116,15 @@ As máscaras saem de `instagram/mascaras.py`.
 | **Comparação** | cartão largo (1000×620) com **duas imagens lado a lado**, frase em serifa logo abaixo (estilo `SobCartao`, y≈858) | antes e depois, dois ângulos, duas opções | `DESCER=420 ./tela-dividida.sh comparacao fala.mp4 a.jpg b.jpg saida.mp4` |
 | **Metade** | imagem ocupando o terço de cima (1080×860), **emenda esfumada** com a fala embaixo e legenda na emenda (estilo `Emenda`, y≈830) | explicar algo na imagem, com riscos desenhados | `./tela-dividida.sh metade fala.mp4 foto.jpg saida.mp4` |
 
+- **Regra de ouro (pedido dela): a imagem NUNCA corta a cabeça dela.** Na referência, ou a cabeça
+  fica **na frente** do cartão (o cabelo passa por cima da borda), ou o cartão fica **inteiro acima**
+  da cabeça. No cartão e na comparação o script já recorta a pessoa quadro a quadro (`recorte.py`,
+  modelo Robust Video Matting) e põe a cabeça na frente (`FRENTE=1`, padrão). Confira sempre
+  um quadro: se o recorte falhar (cabelo "comido", borda estranha), use `FRENTE=0` e suba o cartão
+  (`CARTAO_Y=`) ou desça a pessoa (`DESCER=`) até a cabeça ficar inteira abaixo do cartão.
+  No modo metade, ela já fica toda abaixo da imagem.
+- Com a cabeça na frente, a frase "SobCartao" ficaria em cima do rosto: nesse caso use a legenda
+  normal no meio da tela (y ≈ 1180).
 - `DESCER=` empurra a pessoa para baixo para o rosto não ficar atrás do cartão. O espaço de cima
   vira a própria imagem desfocada e escura, com emenda suave. Ajuste o valor pelo enquadramento (0 a ~500).
 - **Riscos desenhados** (setas, contornos, linhas brancas que "se desenham" sobre a foto de cima):
