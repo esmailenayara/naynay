@@ -47,6 +47,10 @@ ffmpeg -i entrada.mp4 -filter_complex "[0:v]scale=1080:1920:force_original_aspec
   imagem rosa/magenta.
 - Trechos em **preto e branco** (momentos emocionais, como agradecimento ou história pessoal):
   depois do filtro, acrescente `,hue=s=0,curves=master='0/0.04 0.5/0.5 1/0.95'`.
+- **Vídeos dela gravados no consultório claro (paredes brancas, luz forte):** a imagem chega lavada
+  (pretos em ~0,11, mediana ~0,77, saturação ~0,14) e o filtro sozinho deixa tudo cinza. Antes do filtro,
+  aplique a pré-correção (usada e aprovada no teste 1):
+  `format=gbrp,curves=master='0/0 0.15/0.06 0.45/0.33 0.75/0.66 0.92/0.88 1/1',colorbalance=rh=0.02:bh=-0.03,huesaturation=saturation=0.35:colors=r+y+m,huesaturation=saturation=0.15,format=rgb24`
 - O fundo desfocado da referência vem da câmera (lente). Dá para orientar a gravação (seção 7),
   mas não dá para criar isso de forma convincente na edição. Não tente.
 
@@ -75,7 +79,12 @@ Regras:
    a legenda corrida some.
 4. **Título** nos primeiros 2 segundos (o gancho), e lista em cursiva quando ela enumerar coisas.
 5. Revise a transcrição: corrija nomes, termos técnicos e acentos. Tire "né", "tipo", "é…".
-6. Mantenha tudo fora das áreas da interface do Instagram: nada abaixo de y ≈ 1500 (legenda do post
+6. **Fundo claro (os vídeos dela):** texto branco some. Acrescente um halo escuro suave em Fala,
+   Lista, Título e Apoio: `\3c&H1A2430&\3a&H70&\bord4\blur8` no início de cada linha.
+7. **Legenda que ela grava no vídeo** (para eu ler): use para corrigir a transcrição e tire do vídeo
+   final cortando a faixa de baixo (no teste 1, recorte de 1080×1820 a partir do topo e depois
+   enquadramento 9:16 ampliado).
+8. Mantenha tudo fora das áreas da interface do Instagram: nada abaixo de y ≈ 1500 (legenda do post
    e botões) nem colado na direita (curtir/comentar). Mova a legenda se ela cair em cima do rosto
    ou de uma roupa branca (ilegível).
 
@@ -88,6 +97,9 @@ Regras:
 3. **Música de fundo**: instrumental calma (piano, lo-fi suave, cordas), **sem letra** quando ela
    estiver falando, uns 20 dB abaixo da voz, com abaixamento automático enquanto ela fala
    (`sidechaincompress`). Fade-in de 0,5 s e fade-out de 1 s.
+   - Fonte que funciona daqui: **incompetech.com** (Kevin MacLeod, licença CC BY 4.0). Exige crédito
+     na **legenda do post**: "Música: <nome> — Kevin MacLeod (incompetech.com), CC BY 4.0". Sempre
+     entregue esse texto para ela. Pixabay bloqueia o acesso automático.
    - **Decisão dela (17/11/2026): o Claude faz tudo, inclusive escolher e colocar a música.**
      Use trilhas instrumentais livres de direitos para redes sociais, que combinem com o clima
      elegante (piano, cordas, lo-fi suave). Se ela mandar uma música específica, use a dela.
@@ -165,6 +177,10 @@ do `COMPLIANCE.md` (sem antes e depois, sem nomes de produtos etc.) valem para o
 sem ficar avisando. Só não reaproveite nada destes vídeos no site ou nos anúncios do Google.
 
 ## 9. Roteiro de trabalho quando chegarem os arquivos
+
+Modelo completo de edição (cortes, zoom alternado, cartão com a cabeça na frente, legendas, música):
+`instagram/exemplos/teste1-bone-smashing.py`. Copie para a pasta do vídeo novo e adapte.
+
 
 1. Baixar (Google Drive com link "qualquer pessoa com o link"):
    `curl -L -o bruto.mp4 "https://drive.usercontent.google.com/download?id=<ID>&export=download&confirm=t"`
