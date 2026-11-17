@@ -1,0 +1,21 @@
+{
+ "_origem": "Medido no vídeo de referência inteiro (124 quadros úteis de 139, 1 a cada 2 s), mediana.",
+ "ref_pele": [
+  153,
+  117,
+  102
+ ],
+ "ref_neutro": [
+  156,
+  148,
+  148
+ ],
+ "ref_sombra": [
+  23,
+  13,
+  14
+ ],
+ "ref_satpele": 0.352,
+ "ref_preto": 9,
+ "ref_branco": 199
+}

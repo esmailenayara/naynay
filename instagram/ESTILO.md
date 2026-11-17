@@ -18,45 +18,42 @@ O que define o estilo:
 - **Voz limpa e na frente**, com uma **música instrumental bem baixinha** por baixo.
 - Cortes rápidos sem pausas, transições suaves e um ou outro trecho em **preto e branco** para emoção.
 
-## 2. Cor — SEMPRE por referência (comando obrigatório)
+## 2. Cor — PADRÃO DE FILME em todos os vídeos (comando obrigatório)
 
-> **Regra dela (17/11/2026):** a cor tem que ficar **sempre igual à 1ª edição do teste 1**, que ela
-> aprovou. **Não aplique um filtro fixo por cima.** Cada gravação tem luz e sombra diferentes, então a
-> cor é **calculada a partir do arquivo original** de cada vídeo.
+> **Regra dela (17/11/2026):** todos os vídeos com o **padrão de filme da referência**. A cor
+> profissional dos Reels da @kauanysaales foi medida no vídeo de referência inteiro (124 quadros).
+> **Nunca aplique um filtro fixo por cima.** A cor é calculada **a partir do original** de cada vídeo.
+> (A 1ª cor do teste 1 ficou **amarelada** na pele; ela trocou pelo padrão abaixo.)
+
+O padrão (`instagram/cor-alvo-referencia.json`, proporções de `medidas-referencia.json`):
+- **Pele rosada e quente, sem amarelo** (R:G:B ≈ 1,30 : 1 : 0,87) e saturação da pele ≈ 0,35.
+- **Paredes/neutros off-white levemente quentes** (≈ 1,05 : 1 : 1,00).
+- **Sombras bem escuras com um toque vinho** (preto de filme), brancos que não estouram (máx. ~0,89).
+- Grão de filme sutil, vinheta suave e brilho leve nas luzes.
+- O brilho foi adaptado ao cenário claro dela (pele 132 e parede 172, contra 124 e 150 na referência),
+  porque copiar a parede bege da referência deixava a parede dela rosa e a camisa lilás.
 
 **Passo 1, para cada arquivo bruto, ANTES de editar:**
 
 ```bash
-python3 -I instagram/cor.py ajustar <bruto.mov> <pasta>/cor --recorte "<mesmo enquadramento da edição>"
+python3 -I instagram/cor_estilo.py <bruto.mov> <pasta>/estilo --recorte "<mesmo enquadramento da edição>"
 ```
 
-- O script lê 24 quadros do **original**, mede preto, meio-tom, branco, cor de cada canal (R, G, B) e
-  saturação, e calcula a curva que leva **aquele** vídeo até a cor aprovada (casamento de histograma
-  por canal + ajuste de saturação). O alvo medido da edição aprovada está em `instagram/cor-alvo.json`.
-- Depois do cálculo, ele **renderiza de verdade pelo ffmpeg, mede de novo e corrige o que sobrou**
-  (5 rodadas), canal por canal. Na 1ª versão do método isso não existia, e o resultado puxou para o
-  amarelo; ela notou na hora. No fim ele escreve **OK** ou **NÃO BATEU**. Só siga com OK.
-- Ele imprime **ANTES / DEPOIS / ALVO**, com o RGB de sombras, meios-tons e luzes. O DEPOIS tem que bater com o ALVO: preto ~0,09–0,10,
-  meio ~0,63, branco ~0,82, saturação ~0,21. Se não bater, não siga: investigue.
-- Testado: um vídeo dela escurecido e esfriado de propósito chegou no mesmo alvo.
-- Se a luz mudar muito **dentro** do mesmo arquivo (ex.: saiu do sol), rode por trecho com
-  `--inicio S --fim S` e use a cor de cada trecho.
+- Mede no **original** três regiões, **pele**, **neutros** (parede/claros) e **sombras**, e monta uma
+  LUT 3D que leva cada uma ao padrão. A correção é **seletiva**: a cor da pele só mexe no que é pele,
+  a dos neutros só no que é quase sem cor, a das sombras só no escuro. Por isso roupas coloridas
+  continuam com a cor delas.
+- Depois **renderiza de verdade, mede de novo e corrige** (6 rodadas). Imprime antes/depois/alvo de
+  cada região e termina com **OK** ou **NÃO BATEU**. Só siga com OK.
+- Luz muito diferente dentro do mesmo arquivo: rode por trecho (`--inicio S --fim S`).
 
-**Passo 2, na edição:** a cor entra logo depois do enquadramento, e é a única coisa de cor da cadeia:
+**Passo 2, na edição:** `... -filter_complex "<recorte>,$(cat <pasta>/estilo/cor-filtro.txt)" ...`
+(é a única coisa de cor da cadeia e já inclui grão, vinheta e brilho leve).
 
-```bash
-... -filter_complex "<recorte>,$(cat <pasta>/cor/cor-filtro.txt)" ...
-```
+**Passo 3, conferência:** compare um quadro do final com um print da referência lado a lado antes de entregar.
 
-- `cor-filtro.txt` já inclui a textura do visual aprovado (vinheta suave e brilho leve nas luzes).
-- **Não use mais** `filtro-cor.txt` nem a "pré-correção" de forma direta: elas ficam só como receita
-  da edição aprovada, e o `cor.py` usa essa receita para medir o alvo.
-- Só recrie o alvo (`cor.py alvo ...`) se ela aprovar **outra** cor como nova referência.
-
-**Passo 3, conferência antes de entregar:** meça um quadro do vídeo final ao lado do alvo. Se ela
-disser que a cor mudou, meça antes de mexer: no teste 1, a versão 3 tinha a mesma cor da 1ª (diferença
-< 2%). O que muda a percepção é a **marcação HDR** (abaixo) e o **fundo desfocado**, que deixa o
-ambiente mais liso.
+- Mudar o padrão: só se ela pedir. Para remedir a referência: `python3 -I instagram/medir_referencia.py <gravação>`.
+- `cor.py` (casar com a cor do teste 1) e `filtro-cor.txt` são **histórico**: não use nos vídeos novos.
 
 - **HDR do iPhone (importante):** os vídeos dela chegam marcados como HDR (HLG, bt2020). Ela aprovou
   a cor do vídeo que saiu **com essa marcação**. Sem ela, o celular mostra a mesma imagem mais apagada
@@ -210,6 +207,6 @@ Modelo completo de edição (cortes, zoom alternado, cartão com a cabeça na fr
    Guarde os brutos no scratchpad, **nunca no git** (são grandes).
 2. Assistir: tirar quadros (`fps=1/4`) e transcrever (`transcrever.py`).
 3. Montar o corte: pausas fora, melhor ordem, gancho no início.
-4. Cor por referência (`cor.py ajustar`, seção 2) → fundo desfocado → transições → legendas → áudio → exportar com a marcação HDR.
+4. Padrão de filme (`cor_estilo.py`, seção 2) → fundo desfocado → transições → legendas → áudio → exportar com a marcação HDR.
 5. Mostrar para ela 3–4 quadros do resultado e enviar o vídeo final. Ajustar o que ela pedir.
 6. O que ela aprovar ou rejeitar no estilo, **anote neste arquivo** para as próximas edições.

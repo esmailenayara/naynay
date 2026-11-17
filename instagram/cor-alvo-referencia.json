@@ -1,0 +1,21 @@
+{
+ "_origem": "PADRÃO DE FILME de todos os vídeos dela (aprovado como referência em 17/11/2026). Proporções de cor medidas no vídeo de referência inteiro (medidas-referencia.json, 124 quadros). Brilho adaptado ao cenário claro dela: pele 132 (ref 124), parede 172 (ref 150), branco máx. 228.",
+ "pele": [
+  163,
+  125,
+  109
+ ],
+ "neutro": [
+  179,
+  170,
+  170
+ ],
+ "sombra": [
+  23,
+  13,
+  14
+ ],
+ "branco": 228,
+ "satpele": 0.352,
+ "grao": 6
+}

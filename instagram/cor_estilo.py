@@ -2,7 +2,7 @@
 
 Ela escolheu (17/11/2026) a cor de dois prints dos Reels da referência (@kauanysaales):
 pele rosada e neutra (nada de amarelo/laranja), paredes num bege suave, sombras escuras e limpas
-(quase pretas, sem marrom), contraste "de cinema". Os valores medidos estão em cor-alvo-prints.json.
+(quase pretas, sem marrom), contraste "de cinema". Os valores medidos estão em cor-alvo-referencia.json (medido no vídeo de referência inteiro por medir_referencia.py).
 
 Como o cenário dela é diferente do da referência (parede branca, roupa clara), NÃO dá para copiar
 o histograma. Este script mede no ORIGINAL de cada vídeo três regiões: PELE, NEUTROS (paredes/branco)
@@ -23,7 +23,7 @@ AQUI = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, AQUI)
 import cor  # reaproveita a leitura de quadros e os efeitos de textura
 
-ALVO = json.load(open(os.path.join(AQUI, "cor-alvo-prints.json")))
+ALVO = json.load(open(os.path.join(AQUI, "cor-alvo-referencia.json")))
 WR, WG, WB = 0.2126, 0.7152, 0.0722
 
 
@@ -118,7 +118,8 @@ def main():
         for i in range(1, 5): par["yout"][i] = max(par["yout"][i], par["yout"][i - 1] + 2)
     gravar_cube(par, cube)
     real = medir(q(filtro), m)
-    open(os.path.join(a.saida, "cor-filtro.txt"), "w").write(filtro)
+    # grão de filme sutil (só no brilho, muda a cada quadro), aplicado depois de medir
+    open(os.path.join(a.saida, "cor-filtro.txt"), "w").write(f"{filtro},noise=c0s={ALVO.get('grao', 6)}:c0f=t")
     json.dump({k: (float(v) if np.isscalar(v) else [float(x) for x in v]) for k, v in par.items()},
               open(os.path.join(a.saida, "parametros.json"), "w"))
     fmt = lambda c: "(" + ",".join(f"{x:.0f}" for x in c) + ")"
