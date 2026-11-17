@@ -20,7 +20,7 @@ O que define o estilo:
 
 ## 2. Cor (o "filtro")
 
-O filtro está pronto em `instagram/filtro-cor.txt` (cadeia do ffmpeg). Medidas que ele reproduz,
+**Cor aprovada por ela no teste 1.** O filtro está pronto em `instagram/filtro-cor.txt` (cadeia do ffmpeg). Medidas que ele reproduz,
 tiradas dos quadros da referência:
 
 | Característica | Referência | Como o filtro faz |
@@ -51,42 +51,41 @@ ffmpeg -i entrada.mp4 -filter_complex "[0:v]scale=1080:1920:force_original_aspec
   (pretos em ~0,11, mediana ~0,77, saturação ~0,14) e o filtro sozinho deixa tudo cinza. Antes do filtro,
   aplique a pré-correção (usada e aprovada no teste 1):
   `format=gbrp,curves=master='0/0 0.15/0.06 0.45/0.33 0.75/0.66 0.92/0.88 1/1',colorbalance=rh=0.02:bh=-0.03,huesaturation=saturation=0.35:colors=r+y+m,huesaturation=saturation=0.15,format=rgb24`
-- O fundo desfocado da referência vem da câmera (lente). Dá para orientar a gravação (seção 7),
-  mas não dá para criar isso de forma convincente na edição. Não tente.
+- **Fundo desfocado SEMPRE (pedido dela, 17/11/2026):** como na referência, ela nítida e o fundo em
+  desfoque. Recorte a pessoa (`recorte.py`) e desfoque o fundo com `desfoque.py` (intensidade padrão 22).
+  Não use `gblur` direto no ffmpeg: cria uma sombra escura em volta do cabelo.
 
 ## 3. Legendas
 
-Modelo pronto: `instagram/legendas-modelo.ass` (estilos já configurados). Fontes em
-`instagram/fontes/` (todas gratuitas, do Google Fonts). Sempre renderize com
+**Decisão dela (17/11/2026, depois do teste 1): elegante e minimalista. Só DOIS estilos, ambos BRANCOS.**
+Ela é harmonizadora e achou "poluído" ter 4 fontes e cores diferentes. **Não use** título creme,
+letra cursiva, serifa, lista ou qualquer outra cor de texto. Nada de título no topo: os ganchos e
+as viradas de assunto ("Primeiro", "Segundo") entram como fala normal ou como ênfase.
+
+Modelo: `instagram/legendas-modelo.ass`. Fontes em `instagram/fontes/`. Renderize com
 `ass=legendas.ass:fontsdir=instagram/fontes`.
 
 | Estilo | Uso | Fonte |
 |---|---|---|
-| `Fala` | legenda corrida da fala, branca, no meio da tela (y ≈ 1180) | Montserrat SemiBold 64 |
-| `FalaSerifa` | alternativa mais delicada para vídeos calmos | Cormorant Medium Italic 74 |
-| `Destaque` + `DestaqueBrilho` | **a palavra forte** da frase, enorme, com brilho | Playfair ExtraBold Italic 200, estreitada a 80% |
-| `Apoio` | palavrinha pequena acima e à esquerda do destaque ("é ver a", "quem") | Montserrat SemiBold 46 |
-| `Titulo` | gancho/título no topo, cor creme `#F2E4C9` | Cormorant SemiBold 118 |
-| `Lista` | itens que vão aparecendo um embaixo do outro | Allura 108 |
+| `Fala` | legenda padrão, branca, no meio da tela (y ≈ 1180) | Montserrat SemiBold 64 |
+| `Destaque` + `DestaqueBrilho` | **ênfase**: a palavra forte, enorme, branca com brilho | Playfair ExtraBold Italic 200 (estreitada a 80%) |
+| `Apoio` | palavrinha pequena acima e à esquerda da ênfase ("com o", "é") — mesma fonte da Fala | Montserrat SemiBold 46 |
 
 Regras:
-1. **1 a 3 palavras por vez**, trocando no ritmo da fala (tempo de cada palavra com
-   `instagram/transcrever.py`). Nunca duas linhas de legenda corrida.
-2. Entrada com fade curto (`\fad(60,0)`). Sem saída animada: a próxima legenda substitui a anterior.
-3. **Destaque:** no máximo 1 a cada 5–8 segundos, só na palavra que carrega a emoção ou o tema
-   ("naturalidade", "elegância", "ajudou", "segurança"). Entra desfocada e fica nítida em ~0,3 s
-   (`\blur10\t(0,280,\blur0.6)`), com a camada de brilho atrás. Enquanto o destaque está na tela,
-   a legenda corrida some.
-4. **Título** nos primeiros 2 segundos (o gancho), e lista em cursiva quando ela enumerar coisas.
-5. Revise a transcrição: corrija nomes, termos técnicos e acentos. Tire "né", "tipo", "é…".
-6. **Fundo claro (os vídeos dela):** texto branco some. Acrescente um halo escuro suave em Fala,
-   Lista, Título e Apoio: `\3c&H1A2430&\3a&H70&\bord4\blur8` no início de cada linha.
-7. **Legenda que ela grava no vídeo** (para eu ler): use para corrigir a transcrição e tire do vídeo
-   final cortando a faixa de baixo (no teste 1, recorte de 1080×1820 a partir do topo e depois
+1. **1 a 3 palavras por vez**, trocando no ritmo da fala (tempo de cada palavra com `transcrever.py`).
+   Nunca duas linhas de legenda corrida.
+2. Entrada com fade curto (`\fad(60,0)`). A próxima legenda substitui a anterior.
+3. **Ênfase:** no máximo 1 a cada 5–8 segundos, só na palavra que carrega a emoção ou o tema.
+   Entra desfocada e fica nítida em ~0,3 s, com a camada de brilho atrás. Palavras longas: reduza
+   o tamanho (`\fs`) para caber. Enquanto a ênfase está na tela, a legenda padrão some.
+4. Revise a transcrição: corrija nomes, termos técnicos e acentos. Tire "né", "tipo", "é…".
+5. **Fundo claro (os vídeos dela):** coloque um halo escuro suave na Fala e no Apoio
+   (`\3c&H1A2430&\3a&H70&\bord4\blur8`). Não aparece como cor, só dá leitura.
+6. **Legenda que ela grava no vídeo** (para eu ler): use para corrigir a transcrição e tire do vídeo
+   final cortando a faixa de baixo (no teste 1: recorte de 1080×1820 a partir do topo e depois
    enquadramento 9:16 ampliado).
-8. Mantenha tudo fora das áreas da interface do Instagram: nada abaixo de y ≈ 1500 (legenda do post
-   e botões) nem colado na direita (curtir/comentar). Mova a legenda se ela cair em cima do rosto
-   ou de uma roupa branca (ilegível).
+7. Nada abaixo de y ≈ 1500 (legenda do post e botões do Instagram) nem colado na direita.
+   Mova a legenda se ela cair em cima do rosto.
 
 ## 4. Áudio
 
@@ -125,8 +124,8 @@ As máscaras saem de `instagram/mascaras.py`.
 | Formato | Como fica | Quando usar | Comando |
 |---|---|---|---|
 | **Cartão** | foto/vídeo num cartão de cantos arredondados (860×640) no alto, com sombra suave, por cima da fala | mostrar uma foto, um print, um vídeo curto | `DESCER=420 ./tela-dividida.sh cartao fala.mp4 foto.jpg saida.mp4` |
-| **Comparação** | cartão largo (1000×620) com **duas imagens lado a lado**, frase em serifa logo abaixo (estilo `SobCartao`, y≈858) | antes e depois, dois ângulos, duas opções | `DESCER=420 ./tela-dividida.sh comparacao fala.mp4 a.jpg b.jpg saida.mp4` |
-| **Metade** | imagem ocupando o terço de cima (1080×860), **emenda esfumada** com a fala embaixo e legenda na emenda (estilo `Emenda`, y≈830) | explicar algo na imagem, com riscos desenhados | `./tela-dividida.sh metade fala.mp4 foto.jpg saida.mp4` |
+| **Comparação** | cartão largo (1000×620) com **duas imagens lado a lado** | antes e depois, dois ângulos, duas opções | `DESCER=420 ./tela-dividida.sh comparacao fala.mp4 a.jpg b.jpg saida.mp4` |
+| **Metade** | imagem ocupando o terço de cima (1080×860), **emenda esfumada** com a fala embaixo e a legenda `Fala` na emenda (y≈830) | explicar algo na imagem, com riscos desenhados | `./tela-dividida.sh metade fala.mp4 foto.jpg saida.mp4` |
 
 - **Quem escolhe o formato é o Claude, pelo contexto (decisão dela, 17/11/2026).** Não pergunte. Critério:
   - **Cartão, cabeça na frente:** ela fala de uma foto, um print, um vídeo curto ou um produto e
@@ -144,8 +143,8 @@ As máscaras saem de `instagram/mascaras.py`.
   um quadro: se o recorte falhar (cabelo "comido", borda estranha), use `FRENTE=0` e suba o cartão
   (`CARTAO_Y=`) ou desça a pessoa (`DESCER=`) até a cabeça ficar inteira abaixo do cartão.
   No modo metade, ela já fica toda abaixo da imagem.
-- Com a cabeça na frente, a frase "SobCartao" ficaria em cima do rosto: nesse caso use a legenda
-  normal no meio da tela (y ≈ 1180).
+- Cartão de texto feito por mim (ex.: números de um estudo): só as mesmas duas fontes, texto escuro
+  sobre fundo claro ou branco sobre escuro, sem enfeites. No teste 1 ela achou o resto poluído; mantenha mínimo.
 - `DESCER=` empurra a pessoa para baixo para o rosto não ficar atrás do cartão. O espaço de cima
   vira a própria imagem desfocada e escura, com emenda suave. Ajuste o valor pelo enquadramento (0 a ~500).
 - **Riscos desenhados** (setas, contornos, linhas brancas que "se desenham" sobre a foto de cima):
@@ -160,7 +159,7 @@ As máscaras saem de `instagram/mascaras.py`.
 - 1080×1920, 30 fps, H.264 (`-c:v libx264 -preset slow -crf 18 -pix_fmt yuv420p -movflags +faststart`),
   áudio AAC 192 kbps, 48 kHz.
 - Duração ideal: 30 a 60 s.
-- Entregue também **uma capa** (quadro forte com o título em `Titulo`).
+- Entregue também **uma capa** (quadro forte com a palavra principal no estilo `Destaque`, branca).
 
 ## 7. Dicas de gravação para passar para ela (quando fizer sentido)
 

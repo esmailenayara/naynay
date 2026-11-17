@@ -47,37 +47,12 @@ for i, ((a, b), z) in enumerate(zip(seg, ZOOM) if not os.path.exists("corte.mkv"
 open("lista.txt", "w").write("\n".join(lista))
 os.path.exists("corte.mkv") or sh("ffmpeg", "-v", "error", "-y", "-f", "concat", "-safe", "0", "-i", "lista.txt", "-c", "copy", "corte.mkv")
 
-# --- 2. Cartão do estudo, com a cabeça na frente ---
-C0, C1 = novo(23.65), novo(37.25)          # "O estudo saiu..." até "...vem de homens."
-t_25, t_32, t_98 = novo(27.06), novo(30.34), novo(33.18)
-sh("ffmpeg", "-v", "error", "-y", "-ss", f"{C0:.3f}", "-to", f"{C1:.3f}", "-i", "corte.mkv", "-an", "-c:v", "ffv1", "faixa-cartao.mkv")
-sh("python3", "-I", f"{IG}/recorte.py", "faixa-cartao.mkv", "mascara-cartao.mkv")
-M = "/tmp/mascaras-instagram"
-if not os.path.exists(f"{M}/descer.png"): sh("python3", "-I", f"{IG}/mascaras.py", M)
-DESCER, Y = 420, 190
-L = C1 - C0
-r = lambda x: f"{x - C0:.3f}"
-fc = (f"[0:v]split=3[v][vb][vp];[vb]gblur=sigma=40,eq=brightness=-0.08[borrado];"
-      f"[8:v]format=gray[dm];[vp]format=rgba[vpr];[vpr][dm]alphamerge[vpm];"
-      f"[borrado][vpm]overlay=0:{DESCER}[cena];[cena][1:v]overlay=70:{Y-40}[c];"
-      f"[6:v]format=gray,split=4[m0][m1][m2][m3];")
-janelas = [(0, r(t_25)), (r(t_25), r(t_32)), (r(t_32), r(t_98)), (r(t_98), f"{L:.3f}")]
-ult = "c"
-for k, (a, b) in enumerate(janelas):
-    fc += f"[{k+2}:v]format=rgba[k{k}];[k{k}][m{k}]alphamerge[kc{k}];[{ult}][kc{k}]overlay=110:{Y}:enable='between(t,{a},{b})'[d{k}];"
-    ult = f"d{k}"
-fc += f"[7:v]format=gray[pm];[v]format=rgba[vr];[vr][pm]alphamerge[pessoa];[{ult}][pessoa]overlay=0:{DESCER}:shortest=1,format=yuv420p"
-ins = ["-i", "faixa-cartao.mkv", "-loop", "1", "-i", f"{M}/cartao-sombra.png"]
-for k in range(4): ins += ["-loop", "1", "-i", f"card{k}.png"]
-ins += ["-loop", "1", "-i", f"{M}/cartao.png", "-i", "mascara-cartao.mkv", "-loop", "1", "-i", f"{M}/descer.png"]
-sh("ffmpeg", "-v", "error", "-y", *ins, "-filter_complex", fc, "-t", f"{L:.3f}", "-r", "30", "-c:v", "ffv1", "faixa-composta.mkv")
-
-# remonta: antes + cartão + depois (o áudio vem do corte inteiro)
-sh("ffmpeg", "-v", "error", "-y", "-i", "corte.mkv", "-i", "faixa-composta.mkv", "-filter_complex",
-   f"[0:v]trim=0:{C0:.3f},setpts=PTS-STARTPTS[a];[1:v]setpts=PTS-STARTPTS[b];"
-   f"[0:v]trim=start={C1:.3f},setpts=PTS-STARTPTS[c];[a][b][c]concat=n=3:v=1:a=0[v]",
-   "-map", "[v]", "-map", "0:a", "-c:v", "ffv1", "-c:a", "copy", "com-cartao.mkv")
-
+# --- 2. Fundo desfocado (efeito "modo retrato"): pessoa nítida, consultório em desfoque ---
+if not os.path.exists("mascara.mkv"):
+    sh("python3", "-I", f"{IG}/recorte.py", "corte.mkv", "mascara.mkv")
+sh("python3", "-I", f"{IG}/desfoque.py", "corte.mkv", "mascara.mkv", "fundo.mkv")
+sh("ffmpeg", "-v", "error", "-y", "-i", "fundo.mkv", "-i", "corte.mkv", "-map", "0:v", "-map", "1:a", "-c", "copy", "com-cartao.mkv")
+C0 = C1 = -1
 # --- 3. Legendas ---
 P = json.load(open("palavras.json"))
 ini = lambda i: novo(P[i]["ini"]); fim = lambda i: novo(P[i]["fim"])
@@ -88,7 +63,7 @@ cab = open(f"{IG}/legendas-modelo.ass").read().split("[Events]")[0]
 HALO = r"\3c&H1A2430&\3a&H70&\bord4\blur8"
 ev = ["[Events]", "Format: Layer, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text"]
 def dlg(a, b, estilo, txt, camada=0):
-    if estilo in ("Fala", "Lista", "Titulo", "Apoio") and txt.startswith("{"): txt = "{" + HALO + txt[1:]
+    if estilo in ("Fala", "Apoio") and txt.startswith("{"): txt = "{" + HALO + txt[1:]
     ev.append(f"Dialogue: {camada},{ts(a)},{ts(b)},{estilo},,0,0,0,,{txt}")
 
 # (palavra inicial, palavra final, texto, tipo)  F=fala  D=destaque (com apoio)  L=lista
@@ -99,7 +74,7 @@ C = [
  (22,22,"Sim,","F"),(23,25,"você ouviu direito.","F"),(26,30,"o nome é|bone smashing","D"),
  (31,32,"bater com","F"),(33,34,"o martelo","F"),(35,37,"ou objeto duro","F"),(38,39,"para esculpir","F"),(40,41,"a mandíbula.","F"),
  (42,44,"Mas o que","F"),(45,46,"os profissionais","F"),(47,49,"da saúde descrevem","F"),(50,52,"é outra coisa.","F"),
- (53,60,"Fratura|Lesão de nervo|Problema na mordida","L"),
+ (53,53,"Fratura,","F"),(54,56,"lesão de nervo","F"),(57,60,"e problema na mordida.","F"),
  (61,63,"O estudo saiu","F"),(64,66,"agora em outubro.","F"),
  (67,69,"Em três meses","F"),(70,73,"foram 2,5 milhões","F"),(74,75,"de interações.","F"),(76,76,"Estimados","F"),
  (77,78,"32 milhões","F"),(79,80,"de alcance.","F"),(81,83,"E 98%","F"),(84,85,"desse conteúdo","F"),(86,88,"vem de homens.","F"),
@@ -110,10 +85,10 @@ C = [
  (121,123,"E o inchaço","F"),(124,126,"que aparece depois","F"),(127,129,"é|inflamação","D"),
  (130,131,"O estudo","F"),(132,133,"mediu alcance,","F"),(134,136,"não quantas pessoas","F"),(137,138,"se machucaram.","F"),
  (139,141,"Mas mesmo assim,","F"),(142,144,"isso já muda","F"),(145,146,"duas coisas","F"),(147,148,"para você.","F"),
- (150,152,"O contorno facial","F"),(153,155,"não se modela","F"),(156,157,"em casa.","F"),
+ (149,149,"Primeiro,","F"),(150,152,"o contorno facial","F"),(153,155,"não se modela","F"),(156,157,"em casa.","F"),
  (158,160,"Dor ou inchaço","F"),(161,164,"depois de uma pancada","F"),(165,169,"é caso de|pronto-socorro","D"),
  (170,171,"Não pode","F"),(172,173,"esperar passar.","F"),
- (175,177,"Quem tem sobrinho,","F"),(178,180,"filho, irmão","F"),(181,182,"precisa saber","F"),(183,185,"que isso existe.","F"),
+ (174,174,"Segundo,","F"),(175,177,"quem tem sobrinho,","F"),(178,180,"filho, irmão","F"),(181,182,"precisa saber","F"),(183,185,"que isso existe.","F"),
  (186,187,"O conteúdo","F"),(188,190,"que mais engaja","F"),(191,193,"é o|tutorial","D"),
  (194,196,"Aquele que ensina","F"),(197,198,"como fazer.","F"),
  (199,200,"Rosto bonito","F"),(201,203,"não se constrói","F"),(204,205,"em|casa","D"),
@@ -134,15 +109,11 @@ for n, (a, b, txt, tipo) in enumerate(C):
         for k, (it, tk) in enumerate(zip(itens, comecos)):
             dlg(tk, t1, "Lista", rf"{{\pos(540,{1060 + k * 115})\fad(300,0)}}{it}")
     else:
-        y = 1180 if not (C0 - 0.15 <= t0 < C1) else 1360
+        y = 1180
         dlg(t0, t1, "Fala", rf"{{\pos(540,{y})\fad(60,0)}}{txt}")
 
-# títulos de seção e gancho
-dlg(0, ini(22), "Titulo", r"{\fad(250,200)}O perigo do\Nbone smashing")
-dlg(ini(149), ini(158), "Titulo", r"{\fad(150,200)}Primeiro")
-dlg(ini(174), ini(186), "Titulo", r"{\fad(150,200)}Segundo")
 # flash branco nas viradas de assunto
-for tf in (ini(149), ini(174)):
+for tf in (ini(149), ini(174)):  # viradas de assunto
     dlg(tf - 0.05, tf + 0.25, "Risco", r"{\pos(0,0)\1c&HFFFFFF&\bord0\shad0\fad(0,220)\p1}m 0 0 l 1080 0 1080 1920 0 1920", 5)
 open("legendas.ass", "w").write(cab + "\n".join(ev) + "\n")
 
@@ -160,5 +131,5 @@ af = (f"[0:a]highpass=f=80,afftdn=nf=-25,acompressor=threshold=-18dB:ratio=3:att
 sh("ffmpeg", "-v", "error", "-y", "-i", "com-cartao.mkv", "-i", musica, "-filter_complex",
    f"[0:v]ass=legendas.ass:fontsdir={IG}/fontes[v];{af}", "-map", "[v]", "-map", "[a]",
    "-c:v", "libx264", "-preset", "slow", "-crf", "18", "-pix_fmt", "yuv420p", "-r", "30",
-   "-c:a", "aac", "-b:a", "192k", "-ar", "48000", "-movflags", "+faststart", "final.mp4")
-print("pronto: final.mp4", round(TOTAL, 1), "s")
+   "-c:a", "aac", "-b:a", "192k", "-ar", "48000", "-movflags", "+faststart", "final2.mp4")
+print("pronto: final2.mp4", round(TOTAL, 1), "s")
