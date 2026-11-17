@@ -36,21 +36,31 @@ def novo(tv):  # tempo do bruto -> tempo do vídeo editado
 
 os.makedirs("trechos", exist_ok=True)
 lista = []
-for i, ((a, b), z) in enumerate(zip(seg, ZOOM) if not os.path.exists("corte.mkv") else []):
+for i, ((a, b), z) in enumerate(zip(seg, ZOOM)):
     w, h = 1024 / z, 1820 / z
     x = min(max(520 - w / 2, 0), 1080 - w); y = min(max(560 - h * 0.30, 0), 1820 - h)
-    vf = f"crop={w:.0f}:{h:.0f}:{x:.0f}:{y:.0f},scale=1080:1920:flags=lanczos,setsar=1,{PRE},{COR}"
+    base = f"crop={w:.0f}:{h:.0f}:{x:.0f}:{y:.0f},scale=1080:1920:flags=lanczos,setsar=1"
+    if i > 0 and i % 2 == 1:   # aproximação: empurra 7% para dentro em 0,45 s (suave no fim)
+        p = "min(t/0.45\\,1)"
+        k = f"(1+0.07*{p}*(2-{p}))"
+        base += (f",scale=w='trunc(1080*{k}/2)*2':h='trunc(1920*{k}/2)*2':eval=frame:flags=bicubic,"
+                 f"crop=1080:1920:'(iw-1080)/2':'(ih-1920)*0.3'")
+    vf = f"{base},{PRE},{COR}"
+    if i > 0 and i % 2 == 0:   # brilho: clarão suave que se apaga em 0,3 s
+        vf += (",split[a][b];[b]gblur=sigma=30[g];"
+               "[a][g]blend=c0_expr='min(255\\,A+B*0.4*max(0\\,1-T/0.3))':c1_expr=A:c2_expr=A")
     out = f"trechos/{i:02d}.mp4"
-    sh("ffmpeg", "-v", "error", "-y", "-ss", f"{a:.3f}", "-to", f"{b:.3f}", "-i", "bruto.bin", "-vf", vf,
-       "-r", "30", "-c:v", "libx264", "-preset", "medium", "-crf", "16", "-c:a", "pcm_s16le", "-ar", "48000", out)
     lista.append(f"file '{out}'")
+    if os.path.exists(out): continue
+    sh("ffmpeg", "-v", "error", "-y", "-ss", f"{a:.3f}", "-to", f"{b:.3f}", "-i", "bruto.bin", "-filter_complex", vf,
+       "-r", "30", "-c:v", "libx264", "-preset", "medium", "-crf", "16", "-c:a", "pcm_s16le", "-ar", "48000", out)
 open("lista.txt", "w").write("\n".join(lista))
 os.path.exists("corte.mkv") or sh("ffmpeg", "-v", "error", "-y", "-f", "concat", "-safe", "0", "-i", "lista.txt", "-c", "copy", "corte.mkv")
 
 # --- 2. Fundo desfocado (efeito "modo retrato"): pessoa nítida, consultório em desfoque ---
 if not os.path.exists("mascara.mkv"):
     sh("python3", "-I", f"{IG}/recorte.py", "corte.mkv", "mascara.mkv")
-sh("python3", "-I", f"{IG}/desfoque.py", "corte.mkv", "mascara.mkv", "fundo.mkv")
+sh("python3", "-I", f"{IG}/desfoque.py", "corte.mkv", "mascara.mkv", "fundo.mkv", "10")
 sh("ffmpeg", "-v", "error", "-y", "-i", "fundo.mkv", "-i", "corte.mkv", "-map", "0:v", "-map", "1:a", "-c", "copy", "com-cartao.mkv")
 C0 = C1 = -1
 # --- 3. Legendas ---
@@ -98,7 +108,6 @@ for n, (a, b, txt, tipo) in enumerate(C):
     t0 = ini(a)
     t1 = ini(C[n + 1][0]) if n + 1 < len(C) else novo(DUR_TOTAL)
     if tipo == "D":
-        t1 = max(t1, t0 + 1.2)
         apoio, palavra = txt.split("|")
         fs = "" if len(palavra) <= 9 else rf"\fs{int(200 * 9 / len(palavra))}"
         dlg(t0, t1, "Apoio", rf"{{\pos(300,1060)\fad(120,0)}}{apoio}", 2)
@@ -131,5 +140,6 @@ af = (f"[0:a]highpass=f=80,afftdn=nf=-25,acompressor=threshold=-18dB:ratio=3:att
 sh("ffmpeg", "-v", "error", "-y", "-i", "com-cartao.mkv", "-i", musica, "-filter_complex",
    f"[0:v]ass=legendas.ass:fontsdir={IG}/fontes[v];{af}", "-map", "[v]", "-map", "[a]",
    "-c:v", "libx264", "-preset", "slow", "-crf", "18", "-pix_fmt", "yuv420p", "-r", "30",
-   "-c:a", "aac", "-b:a", "192k", "-ar", "48000", "-movflags", "+faststart", "final2.mp4")
-print("pronto: final2.mp4", round(TOTAL, 1), "s")
+   "-color_primaries", "bt2020", "-color_trc", "arib-std-b67", "-color_range", "tv",
+   "-c:a", "aac", "-b:a", "192k", "-ar", "48000", "-movflags", "+faststart", "final3.mp4")
+print("pronto: final3.mp4", round(TOTAL, 1), "s")

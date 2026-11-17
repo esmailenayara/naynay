@@ -43,6 +43,11 @@ ffmpeg -i entrada.mp4 -filter_complex "[0:v]scale=1080:1920:force_original_aspec
   primeira leva de vídeos dela, compare um quadro antes/depois e meça com o script de cor (pretos em
   ~0,05–0,07, brancos ≤0,93, sombras quentes). Celular gravando no sol ou em luz fria pode pedir mais
   calor (`rm`/`bm`) ou menos brilho. Depois de ajustar, **atualize este arquivo e o filtro**.
+- **HDR do iPhone (importante):** os vídeos dela chegam marcados como HDR (HLG, bt2020). Ela aprovou
+  a cor do vídeo que saiu **com essa marcação**. Sem ela, o celular mostra a mesma imagem mais apagada
+  e ela acha que "a cor mudou". Na exportação final, sempre acrescente:
+  `-color_primaries bt2020 -color_trc arib-std-b67 -color_range tv`
+  (confira com ffprobe que o final tem `color_transfer=arib-std-b67`).
 - **Não remova** o `format=rgb24` antes do `format=yuv420p` no fim: sem ele, o ffmpeg 6.1 deixa a
   imagem rosa/magenta.
 - Trechos em **preto e branco** (momentos emocionais, como agradecimento ou história pessoal):
@@ -52,7 +57,8 @@ ffmpeg -i entrada.mp4 -filter_complex "[0:v]scale=1080:1920:force_original_aspec
   aplique a pré-correção (usada e aprovada no teste 1):
   `format=gbrp,curves=master='0/0 0.15/0.06 0.45/0.33 0.75/0.66 0.92/0.88 1/1',colorbalance=rh=0.02:bh=-0.03,huesaturation=saturation=0.35:colors=r+y+m,huesaturation=saturation=0.15,format=rgb24`
 - **Fundo desfocado SEMPRE (pedido dela, 17/11/2026):** como na referência, ela nítida e o fundo em
-  desfoque. Recorte a pessoa (`recorte.py`) e desfoque o fundo com `desfoque.py` (intensidade padrão 22).
+  desfoque. Recorte a pessoa (`recorte.py`) e desfoque o fundo com `desfoque.py`. **Intensidade 10** (ela pediu
+  "razoável, não muito intenso"; 22 ficou forte demais).
   Não use `gblur` direto no ffmpeg: cria uma sombra escura em volta do cabelo.
 
 ## 3. Legendas
@@ -106,14 +112,16 @@ Regras:
 
 ## 5. Cortes, transições e movimento
 
-- **Ritmo:** um corte a cada 1,5–4 s. Gancho forte nos 2 primeiros segundos.
-- **Transição padrão:** corte seco. Entre cenas diferentes, dissolve curto (`xfade=fade:duration=0.25`).
-- **Flash branco** (`xfade=fadewhite:duration=0.2`) para abrir um assunto novo ou revelar algo.
-- **Zoom de ênfase:** nas frases fortes, aproxime de 100% para 108% em 0,3 s ou corte direto para um
-  enquadramento mais fechado. Em tomadas longas, zoom lento contínuo (cerca de 1% por segundo).
-- **Cenas de apoio (B-roll):** ambiente, mãos, detalhes, ela de perfil. Entram por cima da fala,
-  com a legenda continuando.
-- **Preto e branco** em trechos emocionais (ver seção 2).
+- **Ritmo:** cortar todas as pausas (silêncio > ~0,3 s). Gancho forte nos 2 primeiros segundos.
+- **Toda emenda de corte tem transição, alternando os dois tipos da referência** (aprovado no teste 1):
+  - **Aproximação:** o trecho novo começa e "empurra" 7% para dentro em 0,45 s, suave no fim
+    (`scale=...:eval=frame` com `k=1+0.07*p*(2-p)`, `p=min(t/0.45,1)`, depois `crop` 1080×1920).
+  - **Brilho:** clarão suave que se apaga em 0,3 s (cópia desfocada somada só no brilho/luma, força 0,4;
+    0,85 ficou estourado no fundo claro dela).
+  - Além disso, alterne o enquadramento entre trechos (100% e 112%) para esconder o corte.
+- **Flash branco** curto nas viradas de assunto ("Primeiro", "Segundo").
+- **Cenas de apoio (B-roll)** e **telas divididas** quando ela mandar imagens.
+- Implementação completa: `instagram/exemplos/teste1-bone-smashing.py`.
 
 ## 5b. Tela dividida (muito usada na referência, sempre que possível)
 
