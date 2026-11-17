@@ -80,7 +80,8 @@ Modelo: `instagram/legendas-modelo.ass`. Fontes em `instagram/fontes/`. Renderiz
 Regras:
 1. **1 a 3 palavras por vez**, trocando no ritmo da fala (tempo de cada palavra com `transcrever.py`).
    Nunca duas linhas de legenda corrida.
-2. Entrada com fade curto (`\fad(60,0)`). A próxima legenda substitui a anterior.
+2. Entrada com fade curto (`\fad(60,0)`). **Uma legenda NUNCA fica em cima da outra** (pedido dela):
+   cada uma termina exatamente quando a próxima começa, inclusive a ênfase. Confira com um script antes de exportar.
 3. **Ênfase:** no máximo 1 a cada 5–8 segundos, só na palavra que carrega a emoção ou o tema.
    Entra desfocada e fica nítida em ~0,3 s, com a camada de brilho atrás. Palavras longas: reduza
    o tamanho (`\fs`) para caber. Enquanto a ênfase está na tela, a legenda padrão some.
