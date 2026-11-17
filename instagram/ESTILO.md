@@ -18,31 +18,43 @@ O que define o estilo:
 - **Voz limpa e na frente**, com uma **música instrumental bem baixinha** por baixo.
 - Cortes rápidos sem pausas, transições suaves e um ou outro trecho em **preto e branco** para emoção.
 
-## 2. Cor (o "filtro")
+## 2. Cor — SEMPRE por referência (comando obrigatório)
 
-**Cor aprovada por ela no teste 1.** O filtro está pronto em `instagram/filtro-cor.txt` (cadeia do ffmpeg). Medidas que ele reproduz,
-tiradas dos quadros da referência:
+> **Regra dela (17/11/2026):** a cor tem que ficar **sempre igual à 1ª edição do teste 1**, que ela
+> aprovou. **Não aplique um filtro fixo por cima.** Cada gravação tem luz e sombra diferentes, então a
+> cor é **calculada a partir do arquivo original** de cada vídeo.
 
-| Característica | Referência | Como o filtro faz |
-|---|---|---|
-| Pretos | nunca chegam a 0; ficam em ~6% (preto "leitoso") | curva levanta o ponto preto para 0,055 |
-| Brancos | topo em ~80–93%, sem estourar | curva limita o branco em 0,93 |
-| Sombras | quentes, R bem acima de B | colorbalance: sombras +vermelho, −azul |
-| Saturação | média 0,27–0,34 (contida) | −8% geral, −35% em verdes, cianos e azuis |
-| Brilho nas luzes | halo suave (efeito filtro "pro-mist") | cópia só das luzes, desfocada, em "screen" a 22% |
-| Bordas | escurecem de leve | vinheta suave |
-
-Como aplicar (sempre em vídeo vertical 1080×1920):
+**Passo 1, para cada arquivo bruto, ANTES de editar:**
 
 ```bash
-F=$(tr -d '\n' < instagram/filtro-cor.txt)
-ffmpeg -i entrada.mp4 -filter_complex "[0:v]scale=1080:1920:force_original_aspect_ratio=increase,crop=1080:1920,$F" saida.mp4
+python3 -I instagram/cor.py ajustar <bruto.mov> <pasta>/cor --recorte "<mesmo enquadramento da edição>"
 ```
 
-- **Ajuste fino por vídeo:** o filtro foi calibrado na referência e testado nas fotos do site. Na
-  primeira leva de vídeos dela, compare um quadro antes/depois e meça com o script de cor (pretos em
-  ~0,05–0,07, brancos ≤0,93, sombras quentes). Celular gravando no sol ou em luz fria pode pedir mais
-  calor (`rm`/`bm`) ou menos brilho. Depois de ajustar, **atualize este arquivo e o filtro**.
+- O script lê 24 quadros do **original**, mede preto, meio-tom, branco, cor de cada canal (R, G, B) e
+  saturação, e calcula a curva que leva **aquele** vídeo até a cor aprovada (casamento de histograma
+  por canal + ajuste de saturação). O alvo medido da edição aprovada está em `instagram/cor-alvo.json`.
+- Ele imprime **ANTES / DEPOIS / ALVO**. O DEPOIS tem que bater com o ALVO: preto ~0,09–0,10,
+  meio ~0,63, branco ~0,82, saturação ~0,21. Se não bater, não siga: investigue.
+- Testado: um vídeo dela escurecido e esfriado de propósito chegou no mesmo alvo.
+- Se a luz mudar muito **dentro** do mesmo arquivo (ex.: saiu do sol), rode por trecho com
+  `--inicio S --fim S` e use a cor de cada trecho.
+
+**Passo 2, na edição:** a cor entra logo depois do enquadramento, e é a única coisa de cor da cadeia:
+
+```bash
+... -filter_complex "<recorte>,$(cat <pasta>/cor/cor-filtro.txt)" ...
+```
+
+- `cor-filtro.txt` já inclui a textura do visual aprovado (vinheta suave e brilho leve nas luzes).
+- **Não use mais** `filtro-cor.txt` nem a "pré-correção" de forma direta: elas ficam só como receita
+  da edição aprovada, e o `cor.py` usa essa receita para medir o alvo.
+- Só recrie o alvo (`cor.py alvo ...`) se ela aprovar **outra** cor como nova referência.
+
+**Passo 3, conferência antes de entregar:** meça um quadro do vídeo final ao lado do alvo. Se ela
+disser que a cor mudou, meça antes de mexer: no teste 1, a versão 3 tinha a mesma cor da 1ª (diferença
+< 2%). O que muda a percepção é a **marcação HDR** (abaixo) e o **fundo desfocado**, que deixa o
+ambiente mais liso.
+
 - **HDR do iPhone (importante):** os vídeos dela chegam marcados como HDR (HLG, bt2020). Ela aprovou
   a cor do vídeo que saiu **com essa marcação**. Sem ela, o celular mostra a mesma imagem mais apagada
   e ela acha que "a cor mudou". Na exportação final, sempre acrescente:
@@ -52,10 +64,6 @@ ffmpeg -i entrada.mp4 -filter_complex "[0:v]scale=1080:1920:force_original_aspec
   imagem rosa/magenta.
 - Trechos em **preto e branco** (momentos emocionais, como agradecimento ou história pessoal):
   depois do filtro, acrescente `,hue=s=0,curves=master='0/0.04 0.5/0.5 1/0.95'`.
-- **Vídeos dela gravados no consultório claro (paredes brancas, luz forte):** a imagem chega lavada
-  (pretos em ~0,11, mediana ~0,77, saturação ~0,14) e o filtro sozinho deixa tudo cinza. Antes do filtro,
-  aplique a pré-correção (usada e aprovada no teste 1):
-  `format=gbrp,curves=master='0/0 0.15/0.06 0.45/0.33 0.75/0.66 0.92/0.88 1/1',colorbalance=rh=0.02:bh=-0.03,huesaturation=saturation=0.35:colors=r+y+m,huesaturation=saturation=0.15,format=rgb24`
 - **Fundo desfocado SEMPRE (pedido dela, 17/11/2026):** como na referência, ela nítida e o fundo em
   desfoque. Recorte a pessoa (`recorte.py`) e desfoque o fundo com `desfoque.py`. **Intensidade 10** (ela pediu
   "razoável, não muito intenso"; 22 ficou forte demais).
@@ -195,6 +203,6 @@ Modelo completo de edição (cortes, zoom alternado, cartão com a cabeça na fr
    Guarde os brutos no scratchpad, **nunca no git** (são grandes).
 2. Assistir: tirar quadros (`fps=1/4`) e transcrever (`transcrever.py`).
 3. Montar o corte: pausas fora, melhor ordem, gancho no início.
-4. Aplicar cor → legendas → áudio → transições → exportar.
+4. Cor por referência (`cor.py ajustar`, seção 2) → fundo desfocado → transições → legendas → áudio → exportar com a marcação HDR.
 5. Mostrar para ela 3–4 quadros do resultado e enviar o vídeo final. Ajustar o que ela pedir.
 6. O que ela aprovar ou rejeitar no estilo, **anote neste arquivo** para as próximas edições.
