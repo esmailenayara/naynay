@@ -1,0 +1,33 @@
+[Script Info]
+; Modelo de legendas do Instagram da Dra. Nayara Esmaile (vídeo vertical 1080x1920)
+ScriptType: v4.00+
+PlayResX: 1080
+PlayResY: 1920
+WrapStyle: 2
+ScaledBorderAndShadow: yes
+
+[V4+ Styles]
+Format: Name, Fontname, Fontsize, PrimaryColour, SecondaryColour, OutlineColour, BackColour, Bold, Italic, Underline, StrikeOut, ScaleX, ScaleY, Spacing, Angle, BorderStyle, Outline, Shadow, Alignment, MarginL, MarginR, MarginV, Encoding
+Style: Fala,Montserrat SemiBold,64,&H00FFFFFF,&H00FFFFFF,&H00000000,&H90000000,0,0,0,0,100,100,0,0,1,0,3,5,80,80,0,1
+Style: FalaSerifa,Cormorant Medium Italic,74,&H00FFFFFF,&H00FFFFFF,&H00000000,&H90000000,0,0,0,0,100,100,0,0,1,0,3,5,80,80,0,1
+Style: Destaque,Playfair ExtraBold Italic,200,&H00FFFFFF,&H00FFFFFF,&H00FFFFFF,&H00000000,0,0,0,0,80,100,-4,0,1,0,0,5,40,40,0,1
+Style: DestaqueBrilho,Playfair ExtraBold Italic,200,&H60FFFFFF,&H60FFFFFF,&H40FFFFFF,&H00000000,0,0,0,0,80,100,-4,0,1,6,0,5,40,40,0,1
+Style: Apoio,Montserrat SemiBold,46,&H00FFFFFF,&H00FFFFFF,&H00000000,&HA0000000,0,0,0,0,100,100,0,0,1,0,2,5,40,40,0,1
+Style: Titulo,Cormorant SemiBold,118,&H00C9E4F2,&H00C9E4F2,&H00000000,&H70000000,0,0,0,0,100,100,0,0,1,0,3,8,60,60,230,1
+Style: Lista,Allura,108,&H00FFFFFF,&H00FFFFFF,&H00000000,&H80000000,0,0,0,0,100,100,0,0,1,0,3,5,60,60,0,1
+
+[Events]
+Format: Layer, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text
+; --- Exemplo 1: frase falada (1 a 3 palavras por vez, no meio da tela) ---
+Dialogue: 0,0:00:00.00,0:00:00.70,Fala,,0,0,0,,{\pos(540,1180)\fad(60,0)}O que eu
+Dialogue: 0,0:00:00.70,0:00:01.40,Fala,,0,0,0,,{\pos(540,1180)\fad(60,0)}mais amo
+; --- Exemplo 2: palavra-chave grande com brilho (entra desfocada e fica nítida) ---
+Dialogue: 1,0:00:01.40,0:00:03.00,Apoio,,0,0,0,,{\pos(330,1050)\fad(150,0)}é ver a
+Dialogue: 0,0:00:01.40,0:00:03.00,DestaqueBrilho,,0,0,0,,{\pos(540,1160)\blur18\fad(250,0)}naturalidade
+Dialogue: 1,0:00:01.40,0:00:03.00,Destaque,,0,0,0,,{\pos(540,1160)\blur10\fad(200,0)\t(0,280,\blur0.6)}naturalidade
+; --- Exemplo 3: título + lista que vai aparecendo linha a linha ---
+Dialogue: 0,0:00:03.00,0:00:06.50,Titulo,,0,0,0,,{\fad(200,0)}Eu ofereço:
+Dialogue: 0,0:00:03.40,0:00:06.50,Lista,,0,0,0,,{\pos(540,1020)\fad(300,0)}Naturalidade
+Dialogue: 0,0:00:04.00,0:00:06.50,Lista,,0,0,0,,{\pos(540,1130)\fad(300,0)}Elegância
+Dialogue: 0,0:00:04.60,0:00:06.50,Lista,,0,0,0,,{\pos(540,1240)\fad(300,0)}Segurança
+Dialogue: 0,0:00:05.20,0:00:06.50,Lista,,0,0,0,,{\pos(540,1350)\fad(300,0)}Mais confiança

@@ -44,6 +44,7 @@ npx wrangler login   # se o publicar pedir login (clicar em Allow, conta esmaile
 | Seções da página (topo, faixa, compromisso, sobre…) | `components/Secoes.tsx` e demais `components/` |
 | Cores e tokens | `app/globals.css` |
 | Fotos e logos | `public/images/` (ver tabela no README) |
+| **Edição dos vídeos do Instagram** (cor, legendas, áudio, transições) | `instagram/ESTILO.md`: siga quando ela enviar vídeos |
 | Política de Privacidade / Termos | `app/politica-de-privacidade/`, `app/termos-de-uso/` (ao mudar, atualize `ATUALIZACAO_LEGAL` em `lib/site.ts`) |
 
 Os itens de conteúdo têm `confirmado: true/false`. Os que estão como `false` só aparecem no `npm run dev`, nunca no site publicado.
