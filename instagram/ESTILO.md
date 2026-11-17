@@ -88,9 +88,9 @@ Regras:
 3. **Música de fundo**: instrumental calma (piano, lo-fi suave, cordas), **sem letra** quando ela
    estiver falando, uns 20 dB abaixo da voz, com abaixamento automático enquanto ela fala
    (`sidechaincompress`). Fade-in de 0,5 s e fade-out de 1 s.
-   - Use **só música que ela mesma enviar** ou de banco livre de direitos. Melhor ainda: postar o
-     vídeo sem música e ela escolher a trilha pelo próprio Instagram (biblioteca licenciada).
-     Pergunte qual opção ela prefere na primeira vez e registre aqui.
+   - **Decisão dela (17/11/2026): o Claude faz tudo, inclusive escolher e colocar a música.**
+     Use trilhas instrumentais livres de direitos para redes sociais, que combinem com o clima
+     elegante (piano, cordas, lo-fi suave). Se ela mandar uma música específica, use a dela.
 4. Vídeos sem fala (só imagens): música mais presente, cortes no ritmo da batida.
 
 ## 5. Cortes, transições e movimento
@@ -103,6 +103,27 @@ Regras:
 - **Cenas de apoio (B-roll):** ambiente, mãos, detalhes, ela de perfil. Entram por cima da fala,
   com a legenda continuando.
 - **Preto e branco** em trechos emocionais (ver seção 2).
+
+## 5b. Tela dividida (muito usada na referência, sempre que possível)
+
+Use quando ela comenta um caso, uma foto, um produto ou um ambiente: a imagem fica em cima e ela
+continua falando embaixo. Script: `instagram/tela-dividida.sh` (aplica o filtro de cor em tudo).
+As máscaras saem de `instagram/mascaras.py`.
+
+| Formato | Como fica | Quando usar | Comando |
+|---|---|---|---|
+| **Cartão** | foto/vídeo num cartão de cantos arredondados (860×640) no alto, com sombra suave, por cima da fala | mostrar uma foto, um print, um vídeo curto | `DESCER=420 ./tela-dividida.sh cartao fala.mp4 foto.jpg saida.mp4` |
+| **Comparação** | cartão largo (1000×620) com **duas imagens lado a lado**, frase em serifa logo abaixo (estilo `SobCartao`, y≈858) | antes e depois, dois ângulos, duas opções | `DESCER=420 ./tela-dividida.sh comparacao fala.mp4 a.jpg b.jpg saida.mp4` |
+| **Metade** | imagem ocupando o terço de cima (1080×860), **emenda esfumada** com a fala embaixo e legenda na emenda (estilo `Emenda`, y≈830) | explicar algo na imagem, com riscos desenhados | `./tela-dividida.sh metade fala.mp4 foto.jpg saida.mp4` |
+
+- `DESCER=` empurra a pessoa para baixo para o rosto não ficar atrás do cartão. O espaço de cima
+  vira a própria imagem desfocada e escura, com emenda suave. Ajuste o valor pelo enquadramento (0 a ~500).
+- **Riscos desenhados** (setas, contornos, linhas brancas que "se desenham" sobre a foto de cima):
+  estilo `Risco` no `.ass`, um desenho vetorial revelado por `\clip` animado (Exemplo 4 do modelo).
+  Desenhe o traço seguindo a área de que ela está falando, sincronizado com a palavra.
+- Entrada da tela dividida: corte seco ou dissolve de 0,2 s. Fica na tela enquanto ela fala daquilo
+  (3 a 10 s) e sai com corte seco.
+- A legenda corrida da fala continua, mas posicionada **abaixo do cartão** (ou na emenda), nunca por cima da imagem.
 
 ## 6. Exportação
 
@@ -118,13 +139,12 @@ Regras:
 - Microfone de lapela, se tiver. A voz limpa faz tanta diferença quanto a imagem.
 - Fundo neutro (bege, branco, madeira) combina com o filtro.
 
-## 8. Cuidados de conteúdo (Instagram também conta)
+## 8. Conteúdo
 
-A referência mostra **antes e depois**, rostos de pacientes, agulha e **nomes de produtos**
-("Radiesse", "Botox"). **Não reproduza isso nos vídeos dela**, mesmo pedindo "igual à referência".
-Isso já reprovou campanhas no Google Ads e também vai contra as regras de publicidade em saúde
-(ver `COMPLIANCE.md`). Se o vídeo bruto dela tiver algo assim, avise de forma simples e sugira cortar
-ou trocar a palavra na legenda. Rode o grep de termos proibidos do `COMPLIANCE.md` no texto das legendas.
+**Decisão dela (17/11/2026):** os vídeos são para o **Instagram**, não para o Google Ads. As regras
+do `COMPLIANCE.md` (sem antes e depois, sem nomes de produtos etc.) valem para o site e os anúncios,
+**não para estes vídeos**. Pode replicar a referência por completo, inclusive comparações e nomes,
+sem ficar avisando. Só não reaproveite nada destes vídeos no site ou nos anúncios do Google.
 
 ## 9. Roteiro de trabalho quando chegarem os arquivos
 

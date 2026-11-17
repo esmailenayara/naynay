@@ -14,6 +14,9 @@ Style: Destaque,Playfair ExtraBold Italic,200,&H00FFFFFF,&H00FFFFFF,&H00FFFFFF,&
 Style: DestaqueBrilho,Playfair ExtraBold Italic,200,&H60FFFFFF,&H60FFFFFF,&H40FFFFFF,&H00000000,0,0,0,0,80,100,-4,0,1,6,0,5,40,40,0,1
 Style: Apoio,Montserrat SemiBold,46,&H00FFFFFF,&H00FFFFFF,&H00000000,&HA0000000,0,0,0,0,100,100,0,0,1,0,2,5,40,40,0,1
 Style: Titulo,Cormorant SemiBold,118,&H00C9E4F2,&H00C9E4F2,&H00000000,&H70000000,0,0,0,0,100,100,0,0,1,0,3,8,60,60,230,1
+Style: Emenda,Montserrat SemiBold,58,&H00FFFFFF,&H00FFFFFF,&H00000000,&H90000000,0,1,0,0,100,100,0,0,1,0,3,5,60,60,0,1
+Style: SobCartao,Cormorant Medium Italic,56,&H00FFFFFF,&H00FFFFFF,&H00000000,&H90000000,0,0,0,0,100,100,0,0,1,0,2,5,60,60,0,1
+Style: Risco,Montserrat SemiBold,20,&H00FFFFFF,&H00FFFFFF,&H00FFFFFF,&H60000000,0,0,0,0,100,100,0,0,1,0,1,7,0,0,0,1
 Style: Lista,Allura,108,&H00FFFFFF,&H00FFFFFF,&H00000000,&H80000000,0,0,0,0,100,100,0,0,1,0,3,5,60,60,0,1
 
 [Events]
@@ -31,3 +34,9 @@ Dialogue: 0,0:00:03.40,0:00:06.50,Lista,,0,0,0,,{\pos(540,1020)\fad(300,0)}Natur
 Dialogue: 0,0:00:04.00,0:00:06.50,Lista,,0,0,0,,{\pos(540,1130)\fad(300,0)}Elegância
 Dialogue: 0,0:00:04.60,0:00:06.50,Lista,,0,0,0,,{\pos(540,1240)\fad(300,0)}Segurança
 Dialogue: 0,0:00:05.20,0:00:06.50,Lista,,0,0,0,,{\pos(540,1350)\fad(300,0)}Mais confiança
+; --- Exemplo 4 (tela dividida "metade"): legenda na emenda + risco branco sendo desenhado sobre a foto de cima ---
+; O risco é um desenho vetorial (\p1). Ele "se desenha" porque o \clip vai abrindo da esquerda para a direita.
+Dialogue: 0,0:00:06.50,0:00:09.50,Emenda,,0,0,0,,{\pos(540,830)\fad(80,0)}uma linha mais definida
+Dialogue: 1,0:00:06.80,0:00:09.50,Risco,,0,0,0,,{\pos(0,0)\clip(0,0,250,1920)\t(0,700,\clip(0,0,1080,1920))\p1}m 250 640 b 380 700 520 720 660 690 b 760 668 830 620 880 560 l 886 566 b 836 628 764 678 662 700 b 520 732 378 712 246 650
+; --- Exemplo 5 (tela dividida "comparação"): frase em serifa logo abaixo do cartão ---
+Dialogue: 0,0:00:09.50,0:00:12.00,SobCartao,,0,0,0,,{\pos(540,858)\fad(80,0)}o rosto dela mais harmônico
