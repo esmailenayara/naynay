@@ -116,6 +116,15 @@ As máscaras saem de `instagram/mascaras.py`.
 | **Comparação** | cartão largo (1000×620) com **duas imagens lado a lado**, frase em serifa logo abaixo (estilo `SobCartao`, y≈858) | antes e depois, dois ângulos, duas opções | `DESCER=420 ./tela-dividida.sh comparacao fala.mp4 a.jpg b.jpg saida.mp4` |
 | **Metade** | imagem ocupando o terço de cima (1080×860), **emenda esfumada** com a fala embaixo e legenda na emenda (estilo `Emenda`, y≈830) | explicar algo na imagem, com riscos desenhados | `./tela-dividida.sh metade fala.mp4 foto.jpg saida.mp4` |
 
+- **Quem escolhe o formato é o Claude, pelo contexto (decisão dela, 17/11/2026).** Não pergunte. Critério:
+  - **Cartão, cabeça na frente:** ela fala de uma foto, um print, um vídeo curto ou um produto e
+    continua sendo o centro da cena. É o formato mais usado.
+  - **Cartão inteiro acima da cabeça:** a imagem é o principal e precisa aparecer sem nada na frente
+    (detalhe pequeno, texto num print), ou o recorte da pessoa não ficou bom.
+  - **Comparação:** sempre que houver duas imagens para comparar (antes e depois, dois ângulos, duas opções).
+  - **Metade:** quando ela explica algo **dentro** da imagem (regiões do rosto, contorno, linhas)
+    e vai ter risco desenhado. A imagem precisa de espaço e a fala fica embaixo.
+  - **Sem tela dividida:** fala pessoal, emocional ou de opinião. Aí vale o rosto dela em tela cheia.
 - **Regra de ouro (pedido dela): a imagem NUNCA corta a cabeça dela.** Na referência, ou a cabeça
   fica **na frente** do cartão (o cabelo passa por cima da borda), ou o cartão fica **inteiro acima**
   da cabeça. No cartão e na comparação o script já recorta a pessoa quadro a quadro (`recorte.py`,
