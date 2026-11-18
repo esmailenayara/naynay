@@ -11,7 +11,7 @@ PRE = ("format=gbrp,curves=master='0/0 0.15/0.06 0.45/0.33 0.75/0.66 0.92/0.88 1
        "colorbalance=rh=0.02:bh=-0.03,huesaturation=saturation=0.35:colors=r+y+m,huesaturation=saturation=0.15,format=rgb24")
 DUR_TOTAL = 84.775
 # cor por referência (cor.py ajustar): calculada a partir do ORIGINAL para chegar na cor aprovada
-CORF = open("estilo/cor-filtro.txt").read()   # padrão de filme (cor_estilo.py), calculado a partir do original
+CORF = PRE + "," + COR   # receita exata da 1ª versão aprovada (mesmo arquivo bruto)
 
 # --- 1. Trechos de fala (complemento dos silêncios), com folga ---
 sil = [(0, .880), (5.221, 5.674), (8.612, 8.956), (15.869, 16.472), (19.620, 20.048), (23.160, 23.702),
@@ -143,5 +143,5 @@ sh("ffmpeg", "-v", "error", "-y", "-i", "com-cartao.mkv", "-i", musica, "-filter
    f"[0:v]ass=legendas.ass:fontsdir={IG}/fontes[v];{af}", "-map", "[v]", "-map", "[a]",
    "-c:v", "libx264", "-preset", "slow", "-crf", "18", "-pix_fmt", "yuv420p", "-r", "30",
    "-color_primaries", "bt2020", "-color_trc", "arib-std-b67", "-color_range", "tv",
-   "-c:a", "aac", "-b:a", "192k", "-ar", "48000", "-movflags", "+faststart", "final6.mp4")
-print("pronto: final6.mp4", round(TOTAL, 1), "s")
+   "-c:a", "aac", "-b:a", "192k", "-ar", "48000", "-movflags", "+faststart", "final5.mp4")
+print("pronto: final5.mp4", round(TOTAL, 1), "s")

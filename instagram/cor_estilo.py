@@ -1,4 +1,7 @@
-"""COR NO ESTILO DOS PRINTS DE REFERÊNCIA — o padrão de cor dos vídeos dela.
+"""NÃO USAR — a Dra. REPROVOU este visual em 18/11/2026 ("ficou horrível"). Guardado só como histórico.
+A cor oficial é a do cor.py (1ª edição do teste 1). Ver ESTILO.md, seção 2.
+
+COR NO ESTILO DOS PRINTS DE REFERÊNCIA — o padrão de cor dos vídeos dela.
 
 Ela escolheu (17/11/2026) a cor de dois prints dos Reels da referência (@kauanysaales):
 pele rosada e neutra (nada de amarelo/laranja), paredes num bege suave, sombras escuras e limpas
