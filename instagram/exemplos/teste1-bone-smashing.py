@@ -11,7 +11,7 @@ PRE = ("format=gbrp,curves=master='0/0 0.15/0.06 0.45/0.33 0.75/0.66 0.92/0.88 1
        "colorbalance=rh=0.02:bh=-0.03,huesaturation=saturation=0.35:colors=r+y+m,huesaturation=saturation=0.15,format=rgb24")
 DUR_TOTAL = 84.775
 # cor por referência (cor.py ajustar): calculada a partir do ORIGINAL para chegar na cor aprovada
-CORF = open("cor1/cor-filtro.txt").read()
+CORF = open("estilo/cor-filtro.txt").read()   # padrão de filme (cor_estilo.py), calculado a partir do original
 
 # --- 1. Trechos de fala (complemento dos silêncios), com folga ---
 sil = [(0, .880), (5.221, 5.674), (8.612, 8.956), (15.869, 16.472), (19.620, 20.048), (23.160, 23.702),
@@ -133,15 +133,15 @@ TOTAL = float(subprocess.run(["ffprobe", "-v", "error", "-show_entries", "format
                              capture_output=True, text=True).stdout)
 musica = "../musica/gymnopedie.mp3"
 af = (f"[0:a]highpass=f=80,afftdn=nf=-25,acompressor=threshold=-18dB:ratio=3:attack=5:release=80,"
-      f"loudnorm=I=-15:TP=-2:LRA=7,asplit[voz][chave];"
-      f"[1:a]atrim=0:{TOTAL:.2f},volume=0.22,afade=t=in:d=1,afade=t=out:st={TOTAL-1.5:.2f}:d=1.5[mus];"
+      f"loudnorm=I=-15:TP=-2:LRA=7,aresample=48000,apad=whole_dur={TOTAL:.2f},asplit[voz][chave];"
+      f"[1:a]aresample=48000,atrim=0:{TOTAL:.2f},volume=0.22,afade=t=in:d=1,afade=t=out:st={TOTAL-1.5:.2f}:d=1.5[mus];"
       f"[mus][chave]sidechaincompress=threshold=0.03:ratio=4:attack=20:release=400[musb];"
-      f"[voz][musb]amix=inputs=2:normalize=0,loudnorm=I=-14:TP=-1.5:LRA=8[a]")
+      f"[voz][musb]amix=inputs=2:normalize=0:duration=first,loudnorm=I=-14:TP=-1.5:LRA=8,aresample=48000[a]")
 
 # --- 5. Final ---
 sh("ffmpeg", "-v", "error", "-y", "-i", "com-cartao.mkv", "-i", musica, "-filter_complex",
    f"[0:v]ass=legendas.ass:fontsdir={IG}/fontes[v];{af}", "-map", "[v]", "-map", "[a]",
    "-c:v", "libx264", "-preset", "slow", "-crf", "18", "-pix_fmt", "yuv420p", "-r", "30",
    "-color_primaries", "bt2020", "-color_trc", "arib-std-b67", "-color_range", "tv",
-   "-c:a", "aac", "-b:a", "192k", "-ar", "48000", "-movflags", "+faststart", "final4.mp4")
-print("pronto: final4.mp4", round(TOTAL, 1), "s")
+   "-c:a", "aac", "-b:a", "192k", "-ar", "48000", "-movflags", "+faststart", "final6.mp4")
+print("pronto: final6.mp4", round(TOTAL, 1), "s")
