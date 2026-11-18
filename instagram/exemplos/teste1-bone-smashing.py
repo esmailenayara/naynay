@@ -110,11 +110,13 @@ for n, (a, b, txt, tipo) in enumerate(C):
     t0 = ini(a)
     t1 = ini(C[n + 1][0]) if n + 1 < len(C) else novo(DUR_TOTAL)
     if tipo == "D":
+        # 1º a frase (legenda normal, mesma posição); depois a palavra de destaque SOZINHA
         apoio, palavra = txt.split("|")
+        td = ini(b - len(palavra.split()) + 1)          # quando ela começa a falar a palavra de destaque
         fs = "" if len(palavra) <= 9 else rf"\fs{int(200 * 9 / len(palavra))}"
-        dlg(t0, t1, "Apoio", rf"{{\pos(300,1060)\fad(120,0)}}{apoio}", 2)
-        dlg(t0, t1, "DestaqueBrilho", rf"{{\pos(540,1170){fs}\blur18\fad(250,0)}}{palavra}", 0)
-        dlg(t0, t1, "Destaque", rf"{{\pos(540,1170){fs}\blur10\fad(200,0)\t(0,280,\blur0.6)}}{palavra}", 1)
+        dlg(t0, td, "Fala", rf"{{\pos(540,1180)\fad(60,0)}}{apoio}")
+        dlg(td, t1, "DestaqueBrilho", rf"{{\pos(540,1170){fs}\blur18\fad(250,0)}}{palavra}", 0)
+        dlg(td, t1, "Destaque", rf"{{\pos(540,1170){fs}\blur10\fad(200,0)\t(0,280,\blur0.6)}}{palavra}", 1)
     elif tipo == "L":
         itens = txt.split("|"); comecos = [ini(53), ini(54), ini(57)]
         for k, (it, tk) in enumerate(zip(itens, comecos)):
@@ -143,5 +145,5 @@ sh("ffmpeg", "-v", "error", "-y", "-i", "com-cartao.mkv", "-i", musica, "-filter
    f"[0:v]ass=legendas.ass:fontsdir={IG}/fontes[v];{af}", "-map", "[v]", "-map", "[a]",
    "-c:v", "libx264", "-preset", "slow", "-crf", "18", "-pix_fmt", "yuv420p", "-r", "30",
    "-color_primaries", "bt2020", "-color_trc", "arib-std-b67", "-color_range", "tv",
-   "-c:a", "aac", "-b:a", "192k", "-ar", "48000", "-movflags", "+faststart", "final5.mp4")
-print("pronto: final5.mp4", round(TOTAL, 1), "s")
+   "-c:a", "aac", "-b:a", "192k", "-ar", "48000", "-movflags", "+faststart", "final7.mp4")
+print("pronto: final7.mp4", round(TOTAL, 1), "s")
