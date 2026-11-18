@@ -78,18 +78,20 @@ Modelo: `instagram/legendas-modelo.ass`. Fontes em `instagram/fontes/`. Renderiz
 |---|---|---|
 | `Fala` | legenda padrão, branca, no meio da tela (y ≈ 1180) | Montserrat SemiBold 64 |
 | `Destaque` + `DestaqueBrilho` | **ênfase**: a palavra forte, enorme, branca com brilho | Playfair ExtraBold Italic 200 (estreitada a 80%) |
-| `Apoio` | palavrinha pequena acima e à esquerda da ênfase ("com o", "é") — mesma fonte da Fala | Montserrat SemiBold 46 |
+| ~~`Apoio`~~ | **não usar** (ela não quer palavrinha em cima da ênfase) | — |
 
 Regras:
 1. **1 a 3 palavras por vez**, trocando no ritmo da fala (tempo de cada palavra com `transcrever.py`).
    Nunca duas linhas de legenda corrida.
 2. Entrada com fade curto (`\fad(60,0)`). **Uma legenda NUNCA fica em cima da outra** (pedido dela):
    cada uma termina exatamente quando a próxima começa, inclusive a ênfase. Confira com um script antes de exportar.
-3. **Ênfase:** no máximo 1 a cada 5–8 segundos, só na palavra que carrega a emoção ou o tema.
-   Entra desfocada e fica nítida em ~0,3 s, com a camada de brilho atrás. Palavras longas: reduza
-   o tamanho (`\fs`) para caber. Enquanto a ênfase está na tela, a legenda padrão some.
+3. **Ênfase (pedido dela, 18/11/2026): primeiro a frase, depois a palavra de destaque, nunca juntas.**
+   A parte da frase antes da palavra forte entra como legenda `Fala` normal, na posição de sempre
+   (ex.: "com o"). Quando ela fala a palavra forte, a frase sai e a palavra de destaque entra **sozinha**,
+   no mesmo lugar, grande e com brilho (entra desfocada e fica nítida em ~0,3 s). Nada fica em cima e
+   nada muda de posição. No máximo 1 ênfase a cada 5–8 s. Palavras longas: reduza o `\fs` para caber.
 4. Revise a transcrição: corrija nomes, termos técnicos e acentos. Tire "né", "tipo", "é…".
-5. **Fundo claro (os vídeos dela):** coloque um halo escuro suave na Fala e no Apoio
+5. **Fundo claro (os vídeos dela):** coloque um halo escuro suave na Fala
    (`\3c&H1A2430&\3a&H70&\bord4\blur8`). Não aparece como cor, só dá leitura.
 6. **Legenda que ela grava no vídeo** (para eu ler): use para corrigir a transcrição e tire do vídeo
    final cortando a faixa de baixo (no teste 1: recorte de 1080×1820 a partir do topo e depois

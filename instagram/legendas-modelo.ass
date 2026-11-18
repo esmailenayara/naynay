@@ -11,7 +11,6 @@ Format: Name, Fontname, Fontsize, PrimaryColour, SecondaryColour, OutlineColour,
 Style: Fala,Montserrat SemiBold,64,&H00FFFFFF,&H00FFFFFF,&H00000000,&H90000000,0,0,0,0,100,100,0,0,1,0,3,5,80,80,0,1
 Style: Destaque,Playfair ExtraBold Italic,200,&H00FFFFFF,&H00FFFFFF,&H00FFFFFF,&H00000000,0,0,0,0,80,100,-4,0,1,0,0,5,40,40,0,1
 Style: DestaqueBrilho,Playfair ExtraBold Italic,200,&H60FFFFFF,&H60FFFFFF,&H40FFFFFF,&H00000000,0,0,0,0,80,100,-4,0,1,6,0,5,40,40,0,1
-Style: Apoio,Montserrat SemiBold,46,&H00FFFFFF,&H00FFFFFF,&H00000000,&HA0000000,0,0,0,0,100,100,0,0,1,0,2,5,40,40,0,1
 Style: Risco,Montserrat SemiBold,20,&H00FFFFFF,&H00FFFFFF,&H00FFFFFF,&H60000000,0,0,0,0,100,100,0,0,1,0,1,7,0,0,0,1
 
 [Events]
@@ -19,10 +18,10 @@ Format: Layer, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text
 ; --- Exemplo 1: frase falada (1 a 3 palavras por vez, no meio da tela) ---
 Dialogue: 0,0:00:00.00,0:00:00.70,Fala,,0,0,0,,{\3c&H1A2430&\3a&H70&\bord4\blur8\pos(540,1180)\fad(60,0)}O que eu
 Dialogue: 0,0:00:00.70,0:00:01.40,Fala,,0,0,0,,{\3c&H1A2430&\3a&H70&\bord4\blur8\pos(540,1180)\fad(60,0)}mais amo
-; --- Exemplo 2: ênfase (palavrinha de apoio + palavra grande com brilho, entra desfocada e fica nítida) ---
-Dialogue: 2,0:00:01.40,0:00:03.00,Apoio,,0,0,0,,{\3c&H1A2430&\3a&H70&\bord4\blur8\pos(300,1060)\fad(120,0)}é ver a
-Dialogue: 0,0:00:01.40,0:00:03.00,DestaqueBrilho,,0,0,0,,{\pos(540,1170)\fs150\blur18\fad(250,0)}naturalidade
-Dialogue: 1,0:00:01.40,0:00:03.00,Destaque,,0,0,0,,{\pos(540,1170)\fs150\blur10\fad(200,0)\t(0,280,\blur0.6)}naturalidade
+; --- Exemplo 2: ênfase = 1º a frase (Fala normal), DEPOIS a palavra de destaque sozinha, no mesmo lugar ---
+Dialogue: 0,0:00:01.40,0:00:02.10,Fala,,0,0,0,,{\3c&H1A2430&\3a&H70&\bord4\blur8\pos(540,1180)\fad(60,0)}é ver a
+Dialogue: 0,0:00:02.10,0:00:03.00,DestaqueBrilho,,0,0,0,,{\pos(540,1170)\fs150\blur18\fad(250,0)}naturalidade
+Dialogue: 1,0:00:02.10,0:00:03.00,Destaque,,0,0,0,,{\pos(540,1170)\fs150\blur10\fad(200,0)\t(0,280,\blur0.6)}naturalidade
 ; --- Exemplo 3: risco branco "se desenhando" sobre a imagem de cima (tela dividida metade) ---
 Dialogue: 1,0:00:03.00,0:00:06.00,Risco,,0,0,0,,{\pos(0,0)\clip(0,0,250,1920)\t(0,700,\clip(0,0,1080,1920))\p1}m 250 640 b 380 700 520 720 660 690 b 760 668 830 620 880 560 l 886 566 b 836 628 764 678 662 700 b 520 732 378 712 246 650
 ; --- Exemplo 4: flash branco na virada de assunto ---
