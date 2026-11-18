@@ -4,6 +4,37 @@
 > do começo ao fim, sem perguntar de novo o que já está decidido aqui. Ela não é programadora:
 > fale em português simples e mostre o resultado (prints e o vídeo final) antes de considerar pronto.
 
+## 0. Checklist de TODO vídeo (aprovado por ela no teste 1, 18/11/2026)
+
+Todo vídeo que ela pedir para editar sai com **tudo isto**, sem perguntar de novo:
+
+1. **Cor da 1ª versão do teste 1**, calculada a partir do original (`cor.py ajustar`, seção 2), com OK no fim.
+2. **Fundo levemente desfocado** (`recorte.py` + `desfoque.py`, intensidade 10).
+3. **Legendas só brancas, 2 estilos:** `Fala` (1 a 3 palavras, meio da tela, halo escuro suave) e
+   `Destaque` (palavra forte grande com brilho). **Primeiro a frase, depois o destaque sozinho, no
+   mesmo lugar.** Nenhuma legenda em cima de outra. Sem título, sem cursiva, sem outras cores.
+4. **Pausas cortadas** e **transição em toda emenda**, alternando aproximação e brilho suave, mais o
+   enquadramento alternado 100%/112%. Flash branco nas viradas de assunto.
+5. **Áudio:** voz tratada, música instrumental baixinha que abaixa quando ela fala, **até o último
+   segundo** (confira a duração). Crédito da música para a legenda do post.
+6. **Legenda que ela grava embaixo:** lida para corrigir a transcrição e **removida** do final.
+7. **Tela dividida** quando ela mandar imagens (seção 5b), com a cabeça dela nunca cortada.
+8. **Exportação:** 1080×1920, 30 fps, **marcação HDR** do iPhone (seção 2), áudio AAC.
+9. Entregar o vídeo + o texto do crédito da música. O que ela aprovar ou reprovar, **anotar aqui**.
+
+Modelo completo pronto para adaptar: `instagram/exemplos/teste1-bone-smashing.py`.
+
+### Preparação de uma sessão nova (uma vez por sessão)
+
+```bash
+pip install faster-whisper onnxruntime opencv-python-headless fonttools
+```
+
+- `ffmpeg` já vem no ambiente. O modelo de recorte (Robust Video Matting) baixa sozinho do GitHub na
+  1ª vez, e o de transcrição (Whisper "small") baixa sozinho do Hugging Face.
+- Música: `incompetech.com` funciona daqui. Pixabay bloqueia o acesso automático.
+- Os vídeos brutos são grandes: guarde no scratchpad, **nunca no git**.
+
 ## 1. De onde veio o estilo
 
 Referência escolhida por ela: os Reels de **@kauanysaales** (gravação de tela de 4 min, analisada
