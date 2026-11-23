@@ -166,6 +166,9 @@ Regras:
   tentativa completa. A transcrição do arquivo bruto erra os tempos e esconde repetições, então
   **depois de cortar, transcreva de novo o vídeo já cortado** e leia procurando frases repetidas antes de
   seguir. As legendas saem dessa 2ª transcrição (tempos exatos). Ferramenta: `exemplos/lote-neface.py --corte`.
+  Para achar a tentativa certa, transcreva **cada trecho de fala separado** (entre silêncios): mostra
+  exatamente onde começa a última tentativa completa. Ao mudar as janelas de um vídeo, **apague os
+  pedaços já renderizados** (`trechos/`, `corte.mkv`, `cortado.*`), senão os antigos são reaproveitados.
 - **Ritmo:** cortar todas as pausas (silêncio > ~0,3 s). Gancho forte nos 2 primeiros segundos.
 - **Toda emenda de corte tem transição, alternando os dois tipos da referência** (aprovado no teste 1):
   - **Aproximação:** o trecho novo começa e "empurra" 7% para dentro em 0,45 s, suave no fim

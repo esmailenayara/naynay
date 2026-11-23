@@ -15,9 +15,9 @@ VIDEOS = {
  "carla":    [("v32", None), ("v31", None), ("v30", None), ("v29", None)],
  "juliana":  [("v20", None), ("v19", None), ("v18", None), ("v17", None), ("v16", None),
               ("v15", [(4.2, 7.35), (28.0, 99)]), ("v14", None)],
- "monique":  [("v28", None), ("v27", None), ("v26", None), ("v25", [(8.85, 12.95), (31.1, 99)]),
+ "monique":  [("v28", None), ("v27", None), ("v26", None), ("v25", [(28.4, 99)]),
               ("v24", None), ("v23", None), ("v22", None), ("v21", [(0, 18.95)])],
- "gabriela": [("v13", None), ("v12", None), ("v11", [(13.2, 99)]), ("v10", None), ("v09", None), ("v08", None)],
+ "gabriela": [("v13", None), ("v12", [(20.9, 99)]), ("v11", [(13.2, 99)]), ("v10", None), ("v09", None), ("v08", None)],
  "renata":   [("v07", None), ("v06", [(15.0, 99)]), ("v05", None), ("v04", [(4.95, 99)])],
  "julie":    [("v03", None), ("v02", [(31.1, 99)]), ("v01", [(24.3, 99)])],
  "final":    [("f5", None), ("f4", None), ("f2", [(8.6, 99)]), ("f1", [(0, 9.5), (23.5, 99)])],
@@ -101,13 +101,16 @@ def palavras_cortado(pasta):
                     ws[i + k]["texto"] = x.replace("-", " ") + (pont[0] if pont and not re.search(r"[,.?!]$", x) else "")
     for w in ws:
         w["texto"] = re.sub(r"(?i)n\s?face|nfase|ne fase", "NE Face", w["texto"]).replace("...", ".")
-    return ws
+    return [w for w in ws if w["texto"].strip("_,.?! ")]
 
 
 DICA = "Método NE Face: um olhar global, um resultado natural, a medida certa para você. Carla, Juliana, Monique, Gabriela, Renata, Julie. 3 ml, 17 ml."
 CORR_GERAL = [(de, para) for _, de, para in CORR] + [
  ("rostas mais", "Rostos mais"), ("rostes mais", "Rostos mais"), ("perfizem em", "Perfis em"),
  ("gostado que vem", "gostaram do-que veem"), ("do que vem", "do que veem"), ("medida e certa", "medida é-certa certa"),
+ ("contornes mais", "contornos mais"), ("perfez em", "Perfis em"), ("quantas ml", "Quantos ml"),
+ ("com o o metodo", "com o _ método"), ("de foto e de lado", "de foto _ de lado"), ("escondiam que ela", "escondiam o-que ela"),
+ ("tirar a foto", "tirar _ foto"),
 ]
 
 
