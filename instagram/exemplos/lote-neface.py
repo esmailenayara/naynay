@@ -7,6 +7,15 @@ IG = "/home/user/naynay/instagram"
 def sh(*a): subprocess.run(list(a), check=True)
 def saida(*a): return subprocess.run(list(a), capture_output=True, text=True).stdout
 REC = "scale=1080:1920:flags=lanczos"
+# COR "FOTO PROFISSIONAL" (opção 2, aprovada por ela em 23/11/2026):
+# 1) conversão CORRETA do HDR (HLG) do iPhone para vídeo normal; 2) contraste leve, toque quente;
+# 3) cantos levemente escurecidos e brilho suave nas luzes; 4) nitidez. O grão fino entra no fim.
+TOM = ("zscale=t=linear:npl=200,format=gbrpf32le,zscale=p=bt709,tonemap=hable:desat=0,"
+       "zscale=t=bt709:m=bt709:r=tv,format=rgb24")
+ACAB = ("curves=master='0/0 0.25/0.22 0.5/0.5 0.75/0.79 1/1',colorbalance=rm=0.02:bm=-0.02,"
+        "format=gbrp,vignette=angle=0.45,split[_b][_g];[_g]curves=master='0/0 0.55/0.05 1/1',gblur=sigma=28[_g2];"
+        "[_b][_g2]blend=all_mode=screen:all_opacity=0.15,format=rgb24,unsharp=5:5:0.6:5:5:0,"
+        "scale=out_color_matrix=bt709:out_range=tv,format=yuv420p")
 BRILHO = "0.88"   # cenário claro (parede e roupa brancas): 1,0 ficou "estourado" para ela
 Y_FALA = 1430     # nestes vídeos ela aparece mais baixa: legenda na altura do colo, nunca no rosto
 
@@ -164,9 +173,7 @@ def montar(nome):
     partes = VIDEOS[nome]
     # cor: mesma sessão de gravação -> um ajuste por vídeo, calculado no arquivo mais longo
     maior = max(partes, key=lambda p: os.path.getsize(f"brutos/{p[0]}.bin"))[0]
-    if not os.path.exists(f"{pasta}/cor/cor-filtro.txt"):
-        print(saida("python3", "-I", f"{IG}/cor_estilo.py", f"brutos/{maior}.bin", f"{pasta}/cor", "--recorte", REC, "--brilho", BRILHO))
-    cor = open(f"{pasta}/cor/cor-filtro.txt").read()
+    cor = f"{TOM},{ACAB}"
     SEG = {f: falas(f, j) for f, j in partes}
     lista, gi = [], 0
     for f, _ in partes:
@@ -223,9 +230,9 @@ def montar(nome):
           f"[voz][musb]amix=inputs=2:normalize=0:duration=first,loudnorm=I=-14:TP=-1.5:LRA=8,aresample=48000[a]")
     final = f"{pasta}/{nome}-bruto.mp4"
     sh("ffmpeg", "-v", "error", "-y", "-i", com, "-i", os.path.join(AQUI, "../../musica/gymnopedie.mp3"), "-filter_complex",
-       f"[0:v]ass={pasta}/legendas.ass:fontsdir={IG}/fontes[v];{af}", "-map", "[v]", "-map", "[a]",
-       "-c:v", "libx264", "-preset", "slow", "-crf", "18", "-pix_fmt", "yuv420p", "-r", "30",
-       "-color_primaries", "bt2020", "-color_trc", "arib-std-b67", "-color_range", "tv",
+       f"[0:v]scale=out_color_matrix=bt709:out_range=tv,format=yuv420p,noise=c0s=2:c0f=t,ass={pasta}/legendas.ass:fontsdir={IG}/fontes[v];{af}", "-map", "[v]", "-map", "[a]",
+       "-c:v", "libx264", "-preset", "slow", "-crf", "15", "-pix_fmt", "yuv420p", "-r", "30",
+       "-colorspace", "bt709", "-color_primaries", "bt709", "-color_trc", "bt709", "-color_range", "tv",
        "-c:a", "aac", "-b:a", "192k", "-ar", "48000", "-movflags", "+faststart", final)
     shutil.rmtree(f"{pasta}/trechos", ignore_errors=True)
     print(f"pronto: {final} ({total:.1f} s)", flush=True)

@@ -8,7 +8,7 @@
 
 Todo vídeo que ela pedir para editar sai com **tudo isto**, sem perguntar de novo:
 
-1. **Cor da 1ª versão do teste 1**, calculada a partir do original por regiões (`cor_estilo.py`, seção 2), com OK no fim.
+1. **Cor "foto profissional"** (seção 2): conversão correta do HDR do iPhone + acabamento da opção 2, exportado como vídeo normal.
 2. **Fundo levemente desfocado** (`recorte.py` + `desfoque.py`, intensidade 10).
 3. **Legendas só brancas, 2 estilos:** `Fala` (1 a 3 palavras, meio da tela, halo escuro suave) e
    `Destaque` (palavra forte grande com brilho). **Primeiro a frase, depois o destaque sozinho, no
@@ -19,7 +19,7 @@ Todo vídeo que ela pedir para editar sai com **tudo isto**, sem perguntar de no
    segundo** (confira a duração). Crédito da música para a legenda do post.
 6. **Legenda que ela grava embaixo:** lida para corrigir a transcrição e **removida** do final.
 7. **Tela dividida** quando ela mandar imagens (seção 5b), com a cabeça dela nunca cortada.
-8. **Exportação:** 1080×1920, 30 fps, **marcação HDR** do iPhone (seção 2), áudio AAC.
+8. **Exportação:** 1080×1920, 30 fps, **vídeo normal SDR bt709** (nunca marcado como HDR), crf 15, áudio AAC.
 9. Entregar o vídeo + o texto do crédito da música. O que ela aprovar ou reprovar, **anotar aqui**.
 
 Modelos prontos para adaptar: `instagram/exemplos/teste1-bone-smashing.py` (um vídeo) e
@@ -51,47 +51,33 @@ O que define o estilo:
 - **Voz limpa e na frente**, com uma **música instrumental bem baixinha** por baixo.
 - Cortes rápidos sem pausas, transições suaves e um ou outro trecho em **preto e branco** para emoção.
 
-## 2. Cor — SEMPRE a cor da 1ª edição do teste 1 (comando obrigatório)
+## 2. Cor — "FOTO PROFISSIONAL" (opção 2, aprovada em 23/11/2026)
 
-> **Decisão final dela (18/11/2026):** a cor de todos os vídeos é a da **1ª versão do teste 1**.
-> Testamos depois um "padrão de filme" medido na referência (pele rosada, sombras escuras, grão) e
-> ela achou **horrível**. **Não use** `cor_estilo.py` / `cor-alvo-referencia.json` (ficam só como
-> histórico do que NÃO fazer). Nunca aplique um filtro fixo por cima: a cor é calculada **a partir do
-> original** de cada vídeo para chegar na cor aprovada.
+> **Decisão dela (23/11/2026), vale para todos os vídeos:** imagem com cara de fotografia profissional,
+> **nada de claro/lavado**. A causa de tudo estar "muito claro" e com "qualidade ruim" era **técnica**:
+> o iPhone grava em **HDR (HLG, bt2020, 10 bits)** e eu tratava o vídeo como comum (ficava lavado) e
+> ainda exportava marcado como HDR (o celular mostrava **mais claro** do que o ajustado). Tudo o que
+> foi feito antes disso (cor do teste 1, `cor.py`, `cor_estilo.py`, "padrão de filme") é **histórico**:
+> não use nos vídeos novos.
 
-**Passo 1, para cada vídeo bruto (ou cada sessão de gravação), ANTES de editar:**
+**A receita (sempre, nesta ordem, depois do enquadramento em 1080×1920):**
 
-```bash
-python3 -I instagram/cor_estilo.py <bruto.mov> <pasta>/cor --recorte "<mesmo enquadramento da edição>"
-```
+1. **Converter o HDR corretamente** (zscale + tonemap):
+   `zscale=t=linear:npl=200,format=gbrpf32le,zscale=p=bt709,tonemap=hable:desat=0,zscale=t=bt709:m=bt709:r=tv,format=rgb24`
+2. **Acabamento da opção 2:** contraste leve e toque quente
+   `curves=master='0/0 0.25/0.22 0.5/0.5 0.75/0.79 1/1',colorbalance=rm=0.02:bm=-0.02`, depois
+   vinheta suave + brilho leve nas luzes (screen 15%) + nitidez `unsharp=5:5:0.6:5:5:0`, e conversão
+   para YUV com matriz bt709 (`scale=out_color_matrix=bt709:out_range=tv,format=yuv420p`).
+   (Receita pronta em `exemplos/lote-neface.py`: variáveis `TOM` e `ACAB`.)
+3. **Fundo desfocado** (abaixo), legendas e, na exportação, **grão fino** `noise=c0s=2:c0f=t` (tira os
+   "degraus" do fundo liso desfocado).
+4. **Exportar como vídeo NORMAL (SDR bt709), nunca marcado como HDR:**
+   `-colorspace bt709 -color_primaries bt709 -color_trc bt709 -color_range tv`, `-crf 15 -preset slow`.
 
-- **Método por REGIÕES (23/11/2026, o oficial):** mede no **original** a **pele**, os **neutros**
-  (parede, roupa branca, claros sem cor) e as **sombras**, e monta uma LUT 3D seletiva que leva cada
-  região até os tons da versão aprovada (`instagram/cor-alvo-aprovada.json`, medido na 1ª versão do
-  teste 1). Não depende da roupa nem do cenário.
-- Por que não o `cor.py` (casamento do histograma da imagem inteira): nos vídeos NE Face (vestido
-  branco, parede lisa, outra luz) ele deixou a **pele escura e alaranjada**, porque compara a imagem
-  inteira e o conteúdo era outro. Use `cor.py` só se o cenário for o mesmo do teste 1.
-- Ele **renderiza de verdade, mede de novo e corrige** (6 rodadas) e termina com **OK** ou **NÃO BATEU**.
-  Só siga com OK. Testado: no bruto do teste 1 reproduz a cor aprovada com diferença 0.
-- **Brilho (`--brilho`):** cenário muito branco (parede lisa clara + roupa branca) fica "estourado" no
-  brilho da versão aprovada. Nos vídeos NE Face ela aprovou o ajuste com `--brilho 0.88` (mesmo tom de
-  pele, menos claro). Cenário como o do teste 1: 1,0.
-- Vários arquivos da **mesma sessão de gravação** (mesma luz e roupa) podem usar um ajuste só,
-  calculado no arquivo mais longo. Se a luz mudar, um ajuste por arquivo ou trecho (`--inicio/--fim`).
+- Vídeo que **não** for HDR (sem `color_transfer=arib-std-b67` no ffprobe): pule o passo 1.
+- Se ela achar claro/escuro demais: o `npl` do passo 1 controla a exposição (200 = aprovado; maior =
+  mais escuro, ex.: 260). Mostre opções em imagem antes de renderizar tudo.
 
-**Passo 2, na edição:** `... -filter_complex "<recorte>,$(cat <pasta>/cor/cor-filtro.txt)" ...`
-(é a única coisa de cor da cadeia e já inclui a vinheta suave e o brilho leve nas luzes).
-
-**Passo 3, conferência:** meça um quadro do final contra o alvo. Se ela disser que a cor mudou, meça
-antes de mexer. No teste 1, versões com a cor igual (< 2% de diferença) pareceram "diferentes" para
-ela por causa do **fundo desfocado** ou da **marcação HDR** (abaixo).
-
-- **HDR do iPhone (importante):** os vídeos dela chegam marcados como HDR (HLG, bt2020). Ela aprovou
-  a cor do vídeo que saiu **com essa marcação**. Sem ela, o celular mostra a mesma imagem mais apagada
-  e ela acha que "a cor mudou". Na exportação final, sempre acrescente:
-  `-color_primaries bt2020 -color_trc arib-std-b67 -color_range tv`
-  (confira com ffprobe que o final tem `color_transfer=arib-std-b67`).
 - **Não remova** o `format=rgb24` antes do `format=yuv420p` no fim: sem ele, o ffmpeg 6.1 deixa a
   imagem rosa/magenta.
 - Trechos em **preto e branco** (momentos emocionais, como agradecimento ou história pessoal):
@@ -258,6 +244,6 @@ Modelo completo de edição (cortes, zoom alternado, cartão com a cabeça na fr
    Guarde os brutos no scratchpad, **nunca no git** (são grandes).
 2. Assistir: tirar quadros (`fps=1/4`) e transcrever (`transcrever.py`).
 3. Montar o corte: pausas fora, melhor ordem, gancho no início.
-4. Cor aprovada (`cor_estilo.py`, seção 2) → fundo desfocado → transições → legendas → áudio → exportar com a marcação HDR.
+4. Cor "foto profissional" (seção 2) → fundo desfocado → transições → legendas → áudio → exportar como SDR bt709.
 5. Mostrar para ela 3–4 quadros do resultado e enviar o vídeo final. Ajustar o que ela pedir.
 6. O que ela aprovar ou rejeitar no estilo, **anote neste arquivo** para as próximas edições.
