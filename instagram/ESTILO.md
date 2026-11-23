@@ -103,6 +103,8 @@ ela por causa do **fundo desfocado** ou da **marcação HDR** (abaixo).
 
 ## 3. Legendas
 
+> **Grafia do método: sempre "N.E. Face"** (com pontos), em legenda, destaque e texto na tela.
+
 **Decisão dela (17/11/2026, depois do teste 1): elegante e minimalista. Só DOIS estilos, ambos BRANCOS.**
 Ela é harmonizadora e achou "poluído" ter 4 fontes e cores diferentes. **Não use** título creme,
 letra cursiva, serifa, lista ou qualquer outra cor de texto. Nada de título no topo: os ganchos e
@@ -114,7 +116,7 @@ Modelo: `instagram/legendas-modelo.ass`. Fontes em `instagram/fontes/`. Renderiz
 | Estilo | Uso | Fonte |
 |---|---|---|
 | `Fala` | legenda padrão, branca, no meio da tela (y ≈ 1180) | Montserrat SemiBold 64 |
-| `Destaque` + `DestaqueBrilho` | **ênfase**: a palavra forte, enorme, branca com brilho | Playfair ExtraBold Italic 200 (estreitada a 80%) |
+| `Destaque` + `DestaqueBrilho` | **ênfase**: a palavra forte, enorme, branca com brilho | **Cormorant Bold Italic 220** (estreitada a 90%). Ela achou feio o N enrolado da Playfair Italic (23/11/2026) |
 | ~~`Apoio`~~ | **não usar** (ela não quer palavrinha em cima da ênfase) | — |
 
 Regras:

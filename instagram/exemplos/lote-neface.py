@@ -81,7 +81,7 @@ def palavras(f, seg):
                     ws[i + k]["texto"] = x.replace("-", " ") + (pont[0] if pont and not re.search(r"[,.?!]$", x) else "")
                 break
     for w in ws:
-        w["texto"] = w["texto"].replace("nfase", "NE Face").replace("NFase", "NE Face").replace("...", ".")
+        w["texto"] = w["texto"].replace("nfase", "N.E. Face").replace("NFase", "N.E. Face").replace("...", ".")
     return ws
 
 
@@ -100,7 +100,10 @@ def palavras_cortado(pasta):
                     pont = re.findall(r"[,.?!]+$", ws[i + k]["texto"])
                     ws[i + k]["texto"] = x.replace("-", " ") + (pont[0] if pont and not re.search(r"[,.?!]$", x) else "")
     for w in ws:
-        w["texto"] = re.sub(r"(?i)n\s?face|nfase|ne fase", "NE Face", w["texto"]).replace("...", ".")
+        w["texto"] = re.sub(r"(?i)n\s?face|nfase|ne fase", "N.E. Face", w["texto"]).replace("...", ".")
+    for i in range(len(ws) - 1):   # "NE" + "Face" -> "N.E." + "Face"
+        if norm(ws[i]["texto"]) == "ne" and norm(ws[i + 1]["texto"]).startswith("face"):
+            ws[i]["texto"] = "N.E."
     return [w for w in ws if w["texto"].strip("_,.?! ")]
 
 
@@ -112,6 +115,9 @@ CORR_GERAL = [(de, para) for _, de, para in CORR] + [
  ("com o o metodo", "com o _ método"), ("de foto e de lado", "de foto _ de lado"), ("escondiam que ela", "escondiam o-que ela"),
  ("tirar a foto", "tirar _ foto"),
 ]
+
+
+LIGACAO = {"de", "a", "o", "e", "que", "do", "da", "no", "na", "em", "com", "os", "as", "um", "uma", "se", "eu", "te", "me", "para", "pra", "mais"}
 
 
 def legendas(nome, itens, novo, total):
@@ -128,7 +134,12 @@ def legendas(nome, itens, novo, total):
             fecha(); blocos.append(("D", itens[i:i + len(alvo[0])])); i += len(alvo[0]); alvo.pop(0); continue
         atual.append(itens[i])
         txt = itens[i][1]["texto"]
-        if len(atual) == 3 or re.search(r"[,.?!]$", txt) or (i + 1 < len(itens) and itens[i + 1][0] != itens[i][0]): fecha()
+        prox = norm(itens[i + 1][1]["texto"]) if i + 1 < len(itens) else ""
+        # não quebra antes de "ml" nem depois de palavrinha de ligação (de, a, o, e, que...)
+        preso = prox in ("ml",) or txt == "N.E." or norm(txt) in LIGACAO or re.fullmatch(r"\d+", norm(txt) or "x")
+        if ((re.search(r"[,.?!]$", txt) and txt != "N.E.") or (len(atual) >= 3 and not preso) or len(atual) >= 4
+                or (i + 1 < len(itens) and itens[i + 1][0] != itens[i][0])):
+            fecha()
         i += 1
     fecha()
     def ts(x): x = max(0, x); return f"{int(x//3600)}:{int(x%3600//60):02d}:{x%60:05.2f}"
@@ -139,7 +150,7 @@ def legendas(nome, itens, novo, total):
         if t1 - t0 < 0.05: continue
         txt = " ".join(w["texto"] for _, w in ws)
         if tipo == "D":
-            pal = re.sub(r"[,.?!]+$", "", txt); fs = "" if len(pal) <= 9 else rf"\fs{int(200 * 9 / len(pal))}"
+            pal = re.sub(r"[,.?!]+$", "", txt); fs = "" if len(pal) <= 9 else rf"\fs{int(220 * 9 / len(pal))}"
             ev.append(f"Dialogue: 0,{ts(t0)},{ts(t1)},DestaqueBrilho,,0,0,0,,{{\\pos(540,{Y_FALA-10}){fs}\\blur18\\fad(250,0)}}{pal}")
             ev.append(f"Dialogue: 1,{ts(t0)},{ts(t1)},Destaque,,0,0,0,,{{\\pos(540,{Y_FALA-10}){fs}\\blur10\\fad(200,0)\\t(0,280,\\blur0.6)}}{pal}")
         else:

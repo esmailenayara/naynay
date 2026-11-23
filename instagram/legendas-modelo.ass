@@ -9,8 +9,8 @@ ScaledBorderAndShadow: yes
 [V4+ Styles]
 Format: Name, Fontname, Fontsize, PrimaryColour, SecondaryColour, OutlineColour, BackColour, Bold, Italic, Underline, StrikeOut, ScaleX, ScaleY, Spacing, Angle, BorderStyle, Outline, Shadow, Alignment, MarginL, MarginR, MarginV, Encoding
 Style: Fala,Montserrat SemiBold,64,&H00FFFFFF,&H00FFFFFF,&H00000000,&H90000000,0,0,0,0,100,100,0,0,1,0,3,5,80,80,0,1
-Style: Destaque,Playfair ExtraBold Italic,200,&H00FFFFFF,&H00FFFFFF,&H00FFFFFF,&H00000000,0,0,0,0,80,100,-4,0,1,0,0,5,40,40,0,1
-Style: DestaqueBrilho,Playfair ExtraBold Italic,200,&H60FFFFFF,&H60FFFFFF,&H40FFFFFF,&H00000000,0,0,0,0,80,100,-4,0,1,6,0,5,40,40,0,1
+Style: Destaque,Cormorant Bold Italic,220,&H00FFFFFF,&H00FFFFFF,&H00FFFFFF,&H00000000,0,0,0,0,90,100,-2,0,1,0,0,5,40,40,0,1
+Style: DestaqueBrilho,Cormorant Bold Italic,220,&H60FFFFFF,&H60FFFFFF,&H40FFFFFF,&H00000000,0,0,0,0,90,100,-2,0,1,6,0,5,40,40,0,1
 Style: Risco,Montserrat SemiBold,20,&H00FFFFFF,&H00FFFFFF,&H00FFFFFF,&H60000000,0,0,0,0,100,100,0,0,1,0,1,7,0,0,0,1
 
 [Events]
