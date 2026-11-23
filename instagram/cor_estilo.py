@@ -89,6 +89,9 @@ def main():
     ap.add_argument("--brilho", type=float, default=1.0,
                     help="multiplica o brilho alvo da pele, dos neutros e do branco (mesmo tom). "
                          "Cenário muito branco (parede + roupa clara) pede ~0,88; ela achou 1,0 'estourado'.")
+    ap.add_argument("--brilho-fundo", type=float, default=None,
+                    help="brilho só dos neutros (parede/fundo/roupa branca) e do branco; o resto segue --brilho. "
+                         "Fundo mais escuro que a pele = cara de foto profissional.")
     a = ap.parse_args()
     global ALVO
     if a.alvo: ALVO = json.load(open(a.alvo))
@@ -96,6 +99,9 @@ def main():
         ALVO = dict(ALVO)
         for k in ("pele", "neutro"): ALVO[k] = [x * a.brilho for x in ALVO[k]]
         ALVO["branco"] = ALVO["branco"] * a.brilho
+    if a.brilho_fundo is not None:
+        ALVO = dict(ALVO); f = a.brilho_fundo / a.brilho
+        ALVO["neutro"] = [x * f for x in ALVO["neutro"]]; ALVO["branco"] = ALVO["branco"] * f
     os.makedirs(a.saida, exist_ok=True)
     cube = os.path.join(os.path.abspath(a.saida), "estilo.cube")
     q = lambda filtro: cor.quadros(a.video, f"{a.recorte},{filtro}", 20, a.inicio, a.fim)
