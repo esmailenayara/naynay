@@ -46,7 +46,7 @@ CORR = [
  ("v20", "o perfil ao lado", "O perfil é-o lado"), ("v19", "parece", "aparece"), ("v12", "dizer", "dizia"),
  ("v07", "a esquerda", "À esquerda"), ("v07", "anotar", "notar"), ("v28", "a esquerda", "À esquerda"),
  ("v28", "a direita", "à direita"), ("v23", "vosto", "rosto"), ("v04", "agente", "agende"),
- ("v16", "e como o", "E com-o o"), ("v02", "e como o", "E com-o o"), ("v14", "olhe o seu", "eu-olho o seu"),
+ ("v16", "e como o", "E com o"), ("v02", "e como o", "E com o"), ("v14", "olhe o seu", "eu-olho o seu"),
  ("v29", "so no lugar", "só do lugar"), ("v06", "e agora", "E agora,"),
 ]
 SEM_ACENTO = lambda s: "".join(c for c in unicodedata.normalize("NFD", s.lower()) if unicodedata.category(c) != "Mn")

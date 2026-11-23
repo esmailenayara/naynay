@@ -168,6 +168,26 @@ Regras:
 - **Cenas de apoio (B-roll)** e **telas divididas** quando ela mandar imagens.
 - Implementação completa: `instagram/exemplos/teste1-bone-smashing.py`.
 
+## 5a. Fotos de antes e depois — FORMATO APROVADO (23/11/2026, pelos prints da @dra.luiseferrao)
+
+**Use este formato para as fotos dela.** Ele substitui o "cartão" da seção 5b quando a foto é um antes e depois.
+
+1. Ela em **tela cheia**.
+2. Entra a foto ocupando **TODA A LARGURA** da tela (nada de cartão pequeno ou de margem), na parte de
+   cima, até a altura da cabeça dela (máx. ~1150 px). A parte de baixo da foto **se funde suavemente**
+   no vídeo (emenda de ~300 px).
+3. **A cabeça dela fica NA FRENTE** da parte de baixo da foto (recorte com `recorte.py`). Ela desce
+   só ~60 px.
+4. **Zoom suave** na foto enquanto está na tela (até 8%), puxando para o antes ou para o depois conforme a fala.
+5. Na saída, **animação de zoom** (10% → 0 em 0,5 s) e volta para ela em tela cheia.
+- **Sem nome nenhum nas fotos.** Só os textos do roteiro: "Resultado imediato" (canto) e, na Monique,
+  "Dia 1 → 3 anos depois".
+- **Qualidade das fotos:** use sempre o arquivo original de maior resolução, sem bordas (se vier com
+  faixa desfocada nas laterais, peça a foto limpa ou corte), redimensione com lanczos.
+- Legendas continuam na altura do colo (não ficam em cima da foto nem do rosto).
+- Ferramentas: `exemplos/fotos-largura-total.py` (montagem) e `exemplos/neface-plano-fotos.py`
+  (em que frase cada foto entra e sai, com foco no antes/depois). Mostre **um exemplo** antes de aplicar em todos.
+
 ## 5b. Tela dividida (muito usada na referência, sempre que possível)
 
 Use quando ela comenta um caso, uma foto, um produto ou um ambiente: a imagem fica em cima e ela
