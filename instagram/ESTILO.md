@@ -176,6 +176,11 @@ As máscaras saem de `instagram/mascaras.py`.
 | **Comparação** | cartão largo (1000×620) com **duas imagens lado a lado** | antes e depois, dois ângulos, duas opções | `DESCER=420 ./tela-dividida.sh comparacao fala.mp4 a.jpg b.jpg saida.mp4` |
 | **Metade** | imagem ocupando o terço de cima (1080×860), **emenda esfumada** com a fala embaixo e a legenda `Fala` na emenda (y≈830) | explicar algo na imagem, com riscos desenhados | `./tela-dividida.sh metade fala.mp4 foto.jpg saida.mp4` |
 
+- **Fotos de antes e depois dela (23/11/2026): cada foto JÁ É uma montagem antes × depois.** Não
+  junte duas imagens (o formato "comparação" é só para quando vierem imagens separadas). Use o
+  **cartão** com a foto **inteira, exatamente como está**: sem cortar, o cartão se ajusta à proporção
+  da foto (encaixar, não preencher). Cabeça dela na frente ou cartão inteiro acima, pelo contexto,
+  e zoom suave na foto para guiar o olhar.
 - **Quem escolhe o formato é o Claude, pelo contexto (decisão dela, 17/11/2026).** Não pergunte. Critério:
   - **Cartão, cabeça na frente:** ela fala de uma foto, um print, um vídeo curto ou um produto e
     continua sendo o centro da cena. É o formato mais usado.
