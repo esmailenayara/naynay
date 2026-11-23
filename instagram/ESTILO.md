@@ -74,6 +74,9 @@ python3 -I instagram/cor_estilo.py <bruto.mov> <pasta>/cor --recorte "<mesmo enq
   inteira e o conteúdo era outro. Use `cor.py` só se o cenário for o mesmo do teste 1.
 - Ele **renderiza de verdade, mede de novo e corrige** (6 rodadas) e termina com **OK** ou **NÃO BATEU**.
   Só siga com OK. Testado: no bruto do teste 1 reproduz a cor aprovada com diferença 0.
+- **Brilho (`--brilho`):** cenário muito branco (parede lisa clara + roupa branca) fica "estourado" no
+  brilho da versão aprovada. Nos vídeos NE Face ela aprovou o ajuste com `--brilho 0.88` (mesmo tom de
+  pele, menos claro). Cenário como o do teste 1: 1,0.
 - Vários arquivos da **mesma sessão de gravação** (mesma luz e roupa) podem usar um ajuste só,
   calculado no arquivo mais longo. Se a luz mudar, um ajuste por arquivo ou trecho (`--inicio/--fim`).
 
@@ -130,7 +133,10 @@ Regras:
 6. **Legenda que ela grava no vídeo** (para eu ler): use para corrigir a transcrição e tire do vídeo
    final cortando a faixa de baixo (no teste 1: recorte de 1080×1820 a partir do topo e depois
    enquadramento 9:16 ampliado).
-7. Nada abaixo de y ≈ 1500 (legenda do post e botões do Instagram) nem colado na direita.
+7. **NUNCA em cima do rosto (ela reclamou nos vídeos NE Face).** A altura padrão (y ≈ 1180) só serve
+   quando ela está enquadrada como no teste 1. Confira um quadro de cada vídeo: se ela aparece mais
+   baixa na tela (sentada, plano mais aberto), desça a legenda para a altura do colo (NE Face: y = 1430).
+8. Nada abaixo de y ≈ 1500 (legenda do post e botões do Instagram) nem colado na direita.
    Mova a legenda se ela cair em cima do rosto.
 
 ## 4. Áudio
@@ -156,6 +162,10 @@ Regras:
 
 ## 5. Cortes, transições e movimento
 
+- **Repetições (ela reclamou):** quando ela erra e repete a frase no mesmo arquivo, fica só a última
+  tentativa completa. A transcrição do arquivo bruto erra os tempos e esconde repetições, então
+  **depois de cortar, transcreva de novo o vídeo já cortado** e leia procurando frases repetidas antes de
+  seguir. As legendas saem dessa 2ª transcrição (tempos exatos). Ferramenta: `exemplos/lote-neface.py --corte`.
 - **Ritmo:** cortar todas as pausas (silêncio > ~0,3 s). Gancho forte nos 2 primeiros segundos.
 - **Toda emenda de corte tem transição, alternando os dois tipos da referência** (aprovado no teste 1):
   - **Aproximação:** o trecho novo começa e "empurra" 7% para dentro em 0,45 s, suave no fim

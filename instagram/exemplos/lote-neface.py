@@ -7,6 +7,8 @@ IG = "/home/user/naynay/instagram"
 def sh(*a): subprocess.run(list(a), check=True)
 def saida(*a): return subprocess.run(list(a), capture_output=True, text=True).stdout
 REC = "scale=1080:1920:flags=lanczos"
+BRILHO = "0.88"   # cenário claro (parede e roupa brancas): 1,0 ficou "estourado" para ela
+Y_FALA = 1430     # nestes vídeos ela aparece mais baixa: legenda na altura do colo, nunca no rosto
 
 # arquivo, janelas a manter (None = tudo). Janelas tiram as tentativas repetidas.
 VIDEOS = {
@@ -18,6 +20,7 @@ VIDEOS = {
  "gabriela": [("v13", None), ("v12", None), ("v11", [(13.2, 99)]), ("v10", None), ("v09", None), ("v08", None)],
  "renata":   [("v07", None), ("v06", [(15.0, 99)]), ("v05", None), ("v04", [(4.95, 99)])],
  "julie":    [("v03", None), ("v02", [(31.1, 99)]), ("v01", [(24.3, 99)])],
+ "final":    [("f5", None), ("f4", None), ("f2", [(8.6, 99)]), ("f1", [(0, 9.5), (23.5, 99)])],
 }
 # palavras de destaque (entram sozinhas, depois da frase)
 DESTAQUE = {
@@ -27,6 +30,7 @@ DESTAQUE = {
  "gabriela": ["tirar foto", "se ver", "ne face", "se gostar"],
  "renata": ["peso", "leve", "ne face", "pesou"],
  "julie": ["oculos escuros", "ne face", "leveza", "acessorio"],
+ "final": ["mudanca", "seguras", "ne face", "17 ml", "consulta", "para voce"],
 }
 # correções do texto da legenda: (arquivo, sequência como foi transcrita) -> sequência certa (mesmo nº de palavras)
 CORR = [
@@ -81,6 +85,32 @@ def palavras(f, seg):
     return ws
 
 
+def palavras_cortado(pasta):
+    js = f"{pasta}/cortado.json"
+    if not os.path.exists(js):
+        sh("ffmpeg", "-v", "error", "-y", "-i", f"{pasta}/corte.mkv", "-vn", "-ac", "1", "-ar", "16000", f"{pasta}/cortado.wav")
+        with open(js, "w") as o:
+            subprocess.run(["python3", "-I", f"{IG}/transcrever.py", f"{pasta}/cortado.wav", DICA], stdout=o, check=True)
+    ws = json.load(open(js))
+    for de, para in CORR_GERAL:
+        de_ = de.split(); para_ = para.split()
+        for i in range(len(ws) - len(de_) + 1):
+            if [norm(w["texto"]) for w in ws[i:i + len(de_)]] == [norm(x) for x in de_]:
+                for k, x in enumerate(para_):
+                    pont = re.findall(r"[,.?!]+$", ws[i + k]["texto"])
+                    ws[i + k]["texto"] = x.replace("-", " ") + (pont[0] if pont and not re.search(r"[,.?!]$", x) else "")
+    for w in ws:
+        w["texto"] = re.sub(r"(?i)n\s?face|nfase|ne fase", "NE Face", w["texto"]).replace("...", ".")
+    return ws
+
+
+DICA = "Método NE Face: um olhar global, um resultado natural, a medida certa para você. Carla, Juliana, Monique, Gabriela, Renata, Julie. 3 ml, 17 ml."
+CORR_GERAL = [(de, para) for _, de, para in CORR] + [
+ ("rostas mais", "Rostos mais"), ("rostes mais", "Rostos mais"), ("perfizem em", "Perfis em"),
+ ("gostado que vem", "gostaram do-que veem"), ("do que vem", "do que veem"), ("medida e certa", "medida é-certa certa"),
+]
+
+
 def legendas(nome, itens, novo, total):
     """itens: lista de (arquivo, palavra). 1–3 palavras por legenda; destaque sozinho depois da frase."""
     alvo = [d.split() for d in DESTAQUE.get(nome, [])]
@@ -107,11 +137,11 @@ def legendas(nome, itens, novo, total):
         txt = " ".join(w["texto"] for _, w in ws)
         if tipo == "D":
             pal = re.sub(r"[,.?!]+$", "", txt); fs = "" if len(pal) <= 9 else rf"\fs{int(200 * 9 / len(pal))}"
-            ev.append(f"Dialogue: 0,{ts(t0)},{ts(t1)},DestaqueBrilho,,0,0,0,,{{\\pos(540,1170){fs}\\blur18\\fad(250,0)}}{pal}")
-            ev.append(f"Dialogue: 1,{ts(t0)},{ts(t1)},Destaque,,0,0,0,,{{\\pos(540,1170){fs}\\blur10\\fad(200,0)\\t(0,280,\\blur0.6)}}{pal}")
+            ev.append(f"Dialogue: 0,{ts(t0)},{ts(t1)},DestaqueBrilho,,0,0,0,,{{\\pos(540,{Y_FALA-10}){fs}\\blur18\\fad(250,0)}}{pal}")
+            ev.append(f"Dialogue: 1,{ts(t0)},{ts(t1)},Destaque,,0,0,0,,{{\\pos(540,{Y_FALA-10}){fs}\\blur10\\fad(200,0)\\t(0,280,\\blur0.6)}}{pal}")
         else:
             txt = txt[0].upper() + txt[1:] if k == 0 else txt
-            ev.append(f"Dialogue: 0,{ts(t0)},{ts(t1)},Fala,,0,0,0,,{{{HALO}\\pos(540,1180)\\fad(60,0)}}{txt}")
+            ev.append(f"Dialogue: 0,{ts(t0)},{ts(t1)},Fala,,0,0,0,,{{{HALO}\\pos(540,{Y_FALA})\\fad(60,0)}}{txt}")
     return cab + "\n".join(ev) + "\n"
 
 
@@ -121,7 +151,7 @@ def montar(nome):
     # cor: mesma sessão de gravação -> um ajuste por vídeo, calculado no arquivo mais longo
     maior = max(partes, key=lambda p: os.path.getsize(f"brutos/{p[0]}.bin"))[0]
     if not os.path.exists(f"{pasta}/cor/cor-filtro.txt"):
-        print(saida("python3", "-I", f"{IG}/cor_estilo.py", f"brutos/{maior}.bin", f"{pasta}/cor", "--recorte", REC))
+        print(saida("python3", "-I", f"{IG}/cor_estilo.py", f"brutos/{maior}.bin", f"{pasta}/cor", "--recorte", REC, "--brilho", BRILHO))
     cor = open(f"{pasta}/cor/cor-filtro.txt").read()
     SEG = {f: falas(f, j) for f, j in partes}
     lista, gi = [], 0
@@ -160,6 +190,8 @@ def montar(nome):
             if g == f: return acc
         return acc
 
+    if ETAPA == "corte":
+        print(nome + ": " + " ".join(w["texto"] for w in palavras_cortado(pasta)), flush=True); return
     com = f"{pasta}/com-fundo.mkv"
     if not os.path.exists(com):
         os.path.exists(f"{pasta}/mascara.mkv") or sh("python3", "-I", f"{IG}/recorte.py", corte, f"{pasta}/mascara.mkv")
@@ -167,8 +199,8 @@ def montar(nome):
         sh("ffmpeg", "-v", "error", "-y", "-i", f"{pasta}/fundo.mkv", "-i", corte, "-map", "0:v", "-map", "1:a", "-c", "copy", com)
         os.remove(f"{pasta}/fundo.mkv")
     total = float(saida("ffprobe", "-v", "error", "-show_entries", "format=duration", "-of", "csv=p=0", com))
-    itens = [(f, w) for f, _ in partes for w in palavras(f, SEG[f])]
-    open(f"{pasta}/legendas.ass", "w").write(legendas(nome, itens, novo, total))
+    itens = [("ed", w) for w in palavras_cortado(pasta)]
+    open(f"{pasta}/legendas.ass", "w").write(legendas(nome, itens, lambda f, t: t, total))
     musica = "../../musica/gymnopedie.mp3"
     af = (f"[0:a]highpass=f=80,afftdn=nf=-25,acompressor=threshold=-18dB:ratio=3:attack=5:release=80,"
           f"loudnorm=I=-15:TP=-2:LRA=7,aresample=48000,apad=whole_dur={total:.2f},asplit[voz][chave];"
@@ -185,6 +217,9 @@ def montar(nome):
     print(f"pronto: {final} ({total:.1f} s)", flush=True)
 
 
+ETAPA = "tudo"
 if __name__ == "__main__":
-    for nome in (sys.argv[1:] or list(VIDEOS)):
+    args = sys.argv[1:]
+    if args and args[0] in ("--corte", "--tudo"): ETAPA = args.pop(0)[2:]
+    for nome in (args or list(VIDEOS)):
         montar(nome)
