@@ -8,7 +8,7 @@
 
 Todo vídeo que ela pedir para editar sai com **tudo isto**, sem perguntar de novo:
 
-1. **Cor da 1ª versão do teste 1**, calculada a partir do original (`cor.py ajustar`, seção 2), com OK no fim.
+1. **Cor da 1ª versão do teste 1**, calculada a partir do original por regiões (`cor_estilo.py`, seção 2), com OK no fim.
 2. **Fundo levemente desfocado** (`recorte.py` + `desfoque.py`, intensidade 10).
 3. **Legendas só brancas, 2 estilos:** `Fala` (1 a 3 palavras, meio da tela, halo escuro suave) e
    `Destaque` (palavra forte grande com brilho). **Primeiro a frase, depois o destaque sozinho, no
@@ -22,7 +22,9 @@ Todo vídeo que ela pedir para editar sai com **tudo isto**, sem perguntar de no
 8. **Exportação:** 1080×1920, 30 fps, **marcação HDR** do iPhone (seção 2), áudio AAC.
 9. Entregar o vídeo + o texto do crédito da música. O que ela aprovar ou reprovar, **anotar aqui**.
 
-Modelo completo pronto para adaptar: `instagram/exemplos/teste1-bone-smashing.py`.
+Modelos prontos para adaptar: `instagram/exemplos/teste1-bone-smashing.py` (um vídeo) e
+`instagram/exemplos/lote-neface.py` (vários vídeos gravados em partes: agrupa as partes, escolhe a
+última tentativa, corta, legenda e exporta todos).
 
 ### Preparação de uma sessão nova (uma vez por sessão)
 
@@ -57,22 +59,23 @@ O que define o estilo:
 > histórico do que NÃO fazer). Nunca aplique um filtro fixo por cima: a cor é calculada **a partir do
 > original** de cada vídeo para chegar na cor aprovada.
 
-**Passo 1, para cada arquivo bruto, ANTES de editar:**
+**Passo 1, para cada vídeo bruto (ou cada sessão de gravação), ANTES de editar:**
 
 ```bash
-python3 -I instagram/cor.py ajustar <bruto.mov> <pasta>/cor --recorte "<mesmo enquadramento da edição>"
+python3 -I instagram/cor_estilo.py <bruto.mov> <pasta>/cor --recorte "<mesmo enquadramento da edição>"
 ```
 
-- Lê 24 quadros do **original**, mede preto, meio-tom, branco, cor de cada canal (R, G, B) e
-  saturação, e calcula a curva que leva **aquele** vídeo até a cor aprovada (alvo medido na 1ª versão:
-  `instagram/cor-alvo.json`).
-- Depois **renderiza de verdade, mede de novo e corrige** (5 rodadas), canal por canal. Sem esse
-  refino, a pele puxou para o amarelo e ela notou. No fim escreve **OK** ou **NÃO BATEU**: só siga com OK.
-  Mostra antes/depois/alvo com o RGB de sombras, meios-tons e luzes.
-- Testado: um vídeo dela escurecido e esfriado de propósito chegou no mesmo alvo (diferença de 0,2%).
-- Luz muito diferente dentro do mesmo arquivo: rode por trecho (`--inicio S --fim S`).
-- **Exceção:** o próprio vídeo do teste 1 (o mesmo arquivo bruto) usa a receita original exata
-  (pré-correção + `filtro-cor.txt`, ver `exemplos/teste1-bone-smashing.py`).
+- **Método por REGIÕES (23/11/2026, o oficial):** mede no **original** a **pele**, os **neutros**
+  (parede, roupa branca, claros sem cor) e as **sombras**, e monta uma LUT 3D seletiva que leva cada
+  região até os tons da versão aprovada (`instagram/cor-alvo-aprovada.json`, medido na 1ª versão do
+  teste 1). Não depende da roupa nem do cenário.
+- Por que não o `cor.py` (casamento do histograma da imagem inteira): nos vídeos NE Face (vestido
+  branco, parede lisa, outra luz) ele deixou a **pele escura e alaranjada**, porque compara a imagem
+  inteira e o conteúdo era outro. Use `cor.py` só se o cenário for o mesmo do teste 1.
+- Ele **renderiza de verdade, mede de novo e corrige** (6 rodadas) e termina com **OK** ou **NÃO BATEU**.
+  Só siga com OK. Testado: no bruto do teste 1 reproduz a cor aprovada com diferença 0.
+- Vários arquivos da **mesma sessão de gravação** (mesma luz e roupa) podem usar um ajuste só,
+  calculado no arquivo mais longo. Se a luz mudar, um ajuste por arquivo ou trecho (`--inicio/--fim`).
 
 **Passo 2, na edição:** `... -filter_complex "<recorte>,$(cat <pasta>/cor/cor-filtro.txt)" ...`
 (é a única coisa de cor da cadeia e já inclui a vinheta suave e o brilho leve nas luzes).
@@ -240,6 +243,6 @@ Modelo completo de edição (cortes, zoom alternado, cartão com a cabeça na fr
    Guarde os brutos no scratchpad, **nunca no git** (são grandes).
 2. Assistir: tirar quadros (`fps=1/4`) e transcrever (`transcrever.py`).
 3. Montar o corte: pausas fora, melhor ordem, gancho no início.
-4. Cor aprovada (`cor.py ajustar`, seção 2) → fundo desfocado → transições → legendas → áudio → exportar com a marcação HDR.
+4. Cor aprovada (`cor_estilo.py`, seção 2) → fundo desfocado → transições → legendas → áudio → exportar com a marcação HDR.
 5. Mostrar para ela 3–4 quadros do resultado e enviar o vídeo final. Ajustar o que ela pedir.
 6. O que ela aprovar ou rejeitar no estilo, **anote neste arquivo** para as próximas edições.

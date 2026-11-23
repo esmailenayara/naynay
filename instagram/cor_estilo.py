@@ -1,23 +1,16 @@
-"""NÃO USAR — a Dra. REPROVOU este visual em 18/11/2026 ("ficou horrível"). Guardado só como histórico.
-A cor oficial é a do cor.py (1ª edição do teste 1). Ver ESTILO.md, seção 2.
+"""COR POR REGIÕES — leva cada vídeo dela até a cor APROVADA (1ª versão do teste 1).
 
-COR NO ESTILO DOS PRINTS DE REFERÊNCIA — o padrão de cor dos vídeos dela.
+Mede no ORIGINAL de cada vídeo três regiões: PELE, NEUTROS (paredes, roupa branca, claros sem cor) e
+SOMBRAS, e monta uma LUT 3D seletiva que leva cada região até o tom da versão aprovada
+(cor-alvo-aprovada.json). Como compara região com região, não depende da roupa nem do cenário
+(o casamento de histograma do cor.py deixou a pele escura e alaranjada num cenário diferente).
+Depois renderiza de verdade, mede de novo e corrige (6 rodadas). No fim diz OK ou NÃO BATEU.
 
-Ela escolheu (17/11/2026) a cor de dois prints dos Reels da referência (@kauanysaales):
-pele rosada e neutra (nada de amarelo/laranja), paredes num bege suave, sombras escuras e limpas
-(quase pretas, sem marrom), contraste "de cinema". Os valores medidos estão em cor-alvo-referencia.json (medido no vídeo de referência inteiro por medir_referencia.py).
-
-Como o cenário dela é diferente do da referência (parede branca, roupa clara), NÃO dá para copiar
-o histograma. Este script mede no ORIGINAL de cada vídeo três regiões: PELE, NEUTROS (paredes/branco)
-e SOMBRAS, e monta uma LUT 3D que leva cada região até o tom da referência:
-  1) curva de luminância (sombra, pele, neutro e branco no brilho certo);
-  2) cor de cada faixa de tom (sombra / pele / neutro) com o equilíbrio R-G-B da referência;
-  3) saturação da pele igual à da referência.
-Depois renderiza de verdade pelo ffmpeg, mede de novo e corrige (4 rodadas). No fim diz OK ou NÃO BATEU.
-
-Uso:  python3 -I cor_estilo.py <bruto.mov> <pasta_saida> [--recorte "crop=...,scale=1080:1920"] [--inicio S --fim S]
+Uso:  python3 -I cor_estilo.py <bruto.mov> <pasta_saida> [--recorte "..."] [--inicio S --fim S] [--alvo arquivo.json]
       -> <pasta_saida>/estilo.cube e <pasta_saida>/cor-filtro.txt
 Na edição:  ...,<recorte>,$(cat <pasta_saida>/cor-filtro.txt)
+
+(cor-alvo-referencia.json = "padrão de filme" medido na referência: ela REPROVOU. Não use.)
 """
 import argparse, json, os, sys
 import numpy as np
@@ -26,7 +19,7 @@ AQUI = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, AQUI)
 import cor  # reaproveita a leitura de quadros e os efeitos de textura
 
-ALVO = json.load(open(os.path.join(AQUI, "cor-alvo-referencia.json")))
+ALVO = json.load(open(os.path.join(AQUI, "cor-alvo-aprovada.json")))
 WR, WG, WB = 0.2126, 0.7152, 0.0722
 
 
@@ -92,7 +85,10 @@ def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("video"); ap.add_argument("saida")
     ap.add_argument("--recorte", default=cor.RECORTE_PADRAO); ap.add_argument("--inicio", type=float); ap.add_argument("--fim", type=float)
+    ap.add_argument("--alvo")
     a = ap.parse_args()
+    global ALVO
+    if a.alvo: ALVO = json.load(open(a.alvo))
     os.makedirs(a.saida, exist_ok=True)
     cube = os.path.join(os.path.abspath(a.saida), "estilo.cube")
     q = lambda filtro: cor.quadros(a.video, f"{a.recorte},{filtro}", 20, a.inicio, a.fim)
@@ -122,7 +118,7 @@ def main():
     gravar_cube(par, cube)
     real = medir(q(filtro), m)
     # grão de filme sutil (só no brilho, muda a cada quadro), aplicado depois de medir
-    open(os.path.join(a.saida, "cor-filtro.txt"), "w").write(f"{filtro},noise=c0s={ALVO.get('grao', 6)}:c0f=t")
+    open(os.path.join(a.saida, "cor-filtro.txt"), "w").write(filtro + (f",noise=c0s={ALVO['grao']}:c0f=t" if ALVO.get("grao") else ""))
     json.dump({k: (float(v) if np.isscalar(v) else [float(x) for x in v]) for k, v in par.items()},
               open(os.path.join(a.saida, "parametros.json"), "w"))
     fmt = lambda c: "(" + ",".join(f"{x:.0f}" for x in c) + ")"
