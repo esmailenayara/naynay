@@ -228,8 +228,8 @@ def montar(nome):
     musica = "../../musica/gymnopedie.mp3"
     af = (f"[0:a]highpass=f=80,afftdn=nf=-25,acompressor=threshold=-18dB:ratio=3:attack=5:release=80,"
           f"loudnorm=I=-15:TP=-2:LRA=7,aresample=48000,apad=whole_dur={total:.2f},asplit[voz][chave];"
-          f"[1:a]aresample=48000,atrim=0:{total:.2f},volume=1.0,afade=t=in:d=1,afade=t=out:st={total-1.5:.2f}:d=1.5[mus];"
-          f"[mus][chave]sidechaincompress=threshold=0.10:ratio=2:attack=30:release=500[musb];"
+          f"[1:a]aresample=48000,atrim=0:{total:.2f},volume=0.22,afade=t=in:d=1,afade=t=out:st={total-1.5:.2f}:d=1.5[mus];"
+          f"[mus][chave]sidechaincompress=threshold=0.03:ratio=4:attack=20:release=400[musb];"
           f"[voz][musb]amix=inputs=2:normalize=0:duration=first,loudnorm=I=-14:TP=-1.5:LRA=8,aresample=48000[a]")
     final = f"{pasta}/{nome}-bruto.mp4"
     sh("ffmpeg", "-v", "error", "-y", "-i", com, "-i", os.path.join(AQUI, "../../musica/gymnopedie.mp3"), "-filter_complex",

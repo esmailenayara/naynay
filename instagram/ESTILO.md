@@ -133,10 +133,9 @@ Regras:
    `highpass=f=80,afftdn=nf=-25,acompressor=threshold=-18dB:ratio=3:attack=5:release=80,loudnorm=I=-14:TP=-1.5:LRA=7`
 2. **Cortar pausas e respirações longas** (jump cuts): o ritmo da referência não tem silêncio.
    Use os tempos das palavras para cortar pausas acima de ~0,35 s e erros/repetições.
-3. **Música de fundo** — **volume: uns 12 dB abaixo da voz** (`volume=1.0` na Gymnopédie,
-   `sidechaincompress=threshold=0.10:ratio=2`). Com as pausas cortadas a voz não para, e o
-   abaixamento antigo (volume 0,22, ratio 4) deixava a música 34 dB abaixo: ela não ouviu música
-   nenhuma. Meça com `volumedetect` a voz e a música antes de exportar. Instrumental calma (piano, lo-fi suave, cordas), **sem letra** quando ela
+3. **Música de fundo — bem baixinha (decisão dela, 24/11/2026).** Mantenha o nível original:
+   `volume=0.22` e `sidechaincompress=threshold=0.03:ratio=4:attack=20:release=400`. Testei a música
+   mais alta (12 dB abaixo da voz) e ela **não gostou**: não aumente. Instrumental calma (piano, lo-fi suave, cordas), **sem letra** quando ela
    estiver falando, uns 20 dB abaixo da voz, com abaixamento automático enquanto ela fala
    (`sidechaincompress`). Fade-in de 0,5 s e fade-out de 1 s.
    - Fonte que funciona daqui: **incompetech.com** (Kevin MacLeod, licença CC BY 4.0). Exige crédito
