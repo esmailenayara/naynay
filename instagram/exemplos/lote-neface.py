@@ -25,7 +25,7 @@ VIDEOS = {
  "juliana":  [("v20", None), ("v19", None), ("v18", None), ("v17", None), ("v16", [(5.4, 99)]),
               ("v15", [(4.2, 7.35), (28.0, 99)]), ("v14", [(13.0, 99)])],
  "monique":  [("v28", None), ("v27", None), ("v26", [(14.1, 99)]), ("v25", [(28.4, 99)]),
-              ("v24", [(8.2, 99)]), ("v23", [(23.4, 99)]), ("v22", None), ("v21", [(0, 18.95)])],
+              ("v24", [(8.2, 99)]), ("v23", [(23.4, 99)]), ("v22", None), ("v21", [(0, 20.7)])],   # v21 inclui "Me chama e vamos conversar." (ela pediu)
  "gabriela": [("v13", None), ("v12", [(20.9, 99)]), ("v11", [(13.2, 99)]), ("v10", None), ("v09", None), ("v08", None)],
  "renata":   [("v07", None), ("v06", [(16.05, 99)]), ("v05", None), ("v04", [(6.5, 99)])],
  "julie":    [("v03", None), ("v02", [(31.1, 99)]), ("v01", [(24.3, 99)])],
@@ -110,6 +110,9 @@ def palavras_cortado(pasta):
                     ws[i + k]["texto"] = x.replace("-", " ") + (pont[0] if pont and not re.search(r"[,.?!]$", x) else "")
     for w in ws:
         w["texto"] = re.sub(r"(?i)n\s?face|nfase|ne fase", "N.E. Face", w["texto"]).replace("...", ".")
+    for i in range(len(ws) - 1):   # vírgula que sobrou da palavra trocada ("Michel," -> "Me chama")
+        if ws[i]["texto"] == "Me," and ws[i + 1]["texto"].startswith("chama"):
+            ws[i]["texto"] = "Me"
     for i in range(len(ws) - 1):   # "NE" + "Face" -> "N.E." + "Face"
         if norm(ws[i]["texto"]) == "ne" and norm(ws[i + 1]["texto"]).startswith("face"):
             ws[i]["texto"] = "N.E."
@@ -122,7 +125,7 @@ CORR_GERAL = [(de, para) for _, de, para in CORR] + [
  ("gostado que vem", "gostaram do-que veem"), ("do que vem", "do que veem"), ("medida e certa", "medida é-certa certa"),
  ("contornes mais", "contornos mais"), ("perfez em", "Perfis em"), ("quantas ml", "Quantos ml"),
  ("com o o metodo", "com o _ método"), ("de foto e de lado", "de foto _ de lado"), ("escondiam que ela", "escondiam o-que ela"),
- ("tirar a foto", "tirar _ foto"), ("entao vem um", "Então, veio um"), ("super especial casamento", "super especial, o-casamento"),
+ ("tirar a foto", "tirar _ foto"), ("entao vem um", "Então, veio um"), ("michel me vamos conversar", "Me chama e-vamos conversar."), ("michelin me vamos conversar", "Me chama e-vamos conversar."), ("super especial casamento", "super especial, o-casamento"),
 ]
 
 
@@ -225,8 +228,8 @@ def montar(nome):
     musica = "../../musica/gymnopedie.mp3"
     af = (f"[0:a]highpass=f=80,afftdn=nf=-25,acompressor=threshold=-18dB:ratio=3:attack=5:release=80,"
           f"loudnorm=I=-15:TP=-2:LRA=7,aresample=48000,apad=whole_dur={total:.2f},asplit[voz][chave];"
-          f"[1:a]aresample=48000,atrim=0:{total:.2f},volume=0.22,afade=t=in:d=1,afade=t=out:st={total-1.5:.2f}:d=1.5[mus];"
-          f"[mus][chave]sidechaincompress=threshold=0.03:ratio=4:attack=20:release=400[musb];"
+          f"[1:a]aresample=48000,atrim=0:{total:.2f},volume=1.0,afade=t=in:d=1,afade=t=out:st={total-1.5:.2f}:d=1.5[mus];"
+          f"[mus][chave]sidechaincompress=threshold=0.10:ratio=2:attack=30:release=500[musb];"
           f"[voz][musb]amix=inputs=2:normalize=0:duration=first,loudnorm=I=-14:TP=-1.5:LRA=8,aresample=48000[a]")
     final = f"{pasta}/{nome}-bruto.mp4"
     sh("ffmpeg", "-v", "error", "-y", "-i", com, "-i", os.path.join(AQUI, "../../musica/gymnopedie.mp3"), "-filter_complex",

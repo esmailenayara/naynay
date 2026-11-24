@@ -133,7 +133,10 @@ Regras:
    `highpass=f=80,afftdn=nf=-25,acompressor=threshold=-18dB:ratio=3:attack=5:release=80,loudnorm=I=-14:TP=-1.5:LRA=7`
 2. **Cortar pausas e respirações longas** (jump cuts): o ritmo da referência não tem silêncio.
    Use os tempos das palavras para cortar pausas acima de ~0,35 s e erros/repetições.
-3. **Música de fundo**: instrumental calma (piano, lo-fi suave, cordas), **sem letra** quando ela
+3. **Música de fundo** — **volume: uns 12 dB abaixo da voz** (`volume=1.0` na Gymnopédie,
+   `sidechaincompress=threshold=0.10:ratio=2`). Com as pausas cortadas a voz não para, e o
+   abaixamento antigo (volume 0,22, ratio 4) deixava a música 34 dB abaixo: ela não ouviu música
+   nenhuma. Meça com `volumedetect` a voz e a música antes de exportar. Instrumental calma (piano, lo-fi suave, cordas), **sem letra** quando ela
    estiver falando, uns 20 dB abaixo da voz, com abaixamento automático enquanto ela fala
    (`sidechaincompress`). Fade-in de 0,5 s e fade-out de 1 s.
    - Fonte que funciona daqui: **incompetech.com** (Kevin MacLeod, licença CC BY 4.0). Exige crédito
@@ -159,6 +162,10 @@ Regras:
   `exemplos/ouvir-trechos.py <vídeo>`, que transcreve cada trecho entre silêncios separado, e leia
   procurando frase cortada no meio ("...", palavra solta) seguida da frase inteira. Trechos de
   menos de ~0,5 s que saem como "Método N.E. Face" são respiração/ruído (o Whisper repete a dica): corte também.
+  **Nunca corte o fim de uma fala porque a transcrição saiu sem sentido** ("Método, Michelle, me vamos
+  conversar" era "Me chama e vamos conversar", o convite final da Monique: ela reclamou do "corte
+  bruto"). Na dúvida, transcreva o trecho com o modelo `medium` antes de decidir. Confira sempre o
+  **final de cada vídeo**: ele tem que terminar numa frase de fechamento, nunca no meio.
   Para achar a tentativa certa, transcreva **cada trecho de fala separado** (entre silêncios): mostra
   exatamente onde começa a última tentativa completa. Ao mudar as janelas de um vídeo, **apague os
   pedaços já renderizados** (`trechos/`, `corte.mkv`, `cortado.*`), senão os antigos são reaproveitados.
