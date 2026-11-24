@@ -35,7 +35,7 @@ VIDEOS = {
 DESTAQUE = {
  "carla": ["3 ml", "ne face", "firme", "lugar certo"],
  "juliana": ["proprio perfil", "equilibrio", "ne face", "proprio perfil"],
- "monique": ["3 anos", "acompanhamento", "casamento", "ne face", "consulta"],
+ "monique": ["tres anos", "3 anos", "acompanhamento", "casamento", "linda", "ne face", "como um todo", "consulta"],
  "gabriela": ["tirar foto", "se ver", "ne face", "se gostar"],
  "renata": ["peso", "leve", "ne face", "pesou"],
  "julie": ["oculos escuros", "ne face", "leveza", "acessorio"],
@@ -142,8 +142,13 @@ def legendas(nome, itens, novo, total):
         nonlocal atual
         if atual: blocos.append(("F", atual)); atual = []
     while i < len(itens):
-        if alvo and [norm(itens[j][1]["texto"]) for j in range(i, min(i + len(alvo[0]), len(itens)))] == alvo[0]:
-            fecha(); blocos.append(("D", itens[i:i + len(alvo[0])])); i += len(alvo[0]); alvo.pop(0); continue
+        achou = None   # procura QUALQUER destaque que ainda falta (antes travava se um não fosse achado)
+        for k, a in enumerate(alvo):
+            if [norm(itens[j][1]["texto"]) for j in range(i, min(i + len(a), len(itens)))] == a:
+                achou = k; break
+        if achou is not None:
+            a = alvo.pop(achou)
+            fecha(); blocos.append(("D", itens[i:i + len(a)])); i += len(a); continue
         atual.append(itens[i])
         txt = itens[i][1]["texto"]
         prox = norm(itens[i + 1][1]["texto"]) if i + 1 < len(itens) else ""

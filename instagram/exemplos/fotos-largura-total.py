@@ -59,7 +59,8 @@ def aplicar(nome, exemplo=None):
     fc += f"[base][comfoto]overlay=0:0:enable='{janela}',format=yuv420p[v]"
     t_args = ["-ss", f"{exemplo[0]}", "-t", f"{exemplo[1]-exemplo[0]}"] if exemplo else ["-t", f"{total:.3f}"]
     saida_v = f"{pasta}/com-fotos{'-exemplo' if exemplo else ''}.mkv"
-    ml.sh("ffmpeg", "-v", "error", "-y", *ins, "-filter_complex", fc, "-map", "[v]", "-map", "0:a", *t_args,
+    if exemplo or not os.path.exists(saida_v) or os.environ.get("REFAZER_IMAGEM"):
+      ml.sh("ffmpeg", "-v", "error", "-y", *ins, "-filter_complex", fc, "-map", "[v]", "-map", "0:a", *t_args,
           "-r", "30", "-c:v", "libx264", "-preset", "medium", "-crf", "12", "-c:a", "copy", saida_v)
     # legendas (mesma altura; ela desceu só 150 px) + textos da foto
     leg = ml.legendas(nome, [("ed", w) for w in ws], lambda f, t: t, total).split("\n")
