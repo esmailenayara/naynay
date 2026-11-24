@@ -180,7 +180,7 @@ Regras:
 1. Ela em **tela cheia**.
 2. Entra a foto ocupando **TODA A LARGURA** da tela (nada de cartão pequeno ou de margem), na parte de
    cima, até a altura da cabeça dela (máx. ~1150 px). A parte de baixo da foto **se funde suavemente**
-   no vídeo (emenda de ~300 px).
+   no vídeo numa emenda BEM FININHA (~70 px). Ela reclamou da de 300 px: o desfoque invadia a foto.
 3. **A cabeça dela fica NA FRENTE** da parte de baixo da foto (recorte com `recorte.py`). Ela desce
    só ~60 px.
 4. **Zoom suave** na foto enquanto está na tela (até 8%), puxando para o antes ou para o depois conforme a fala.

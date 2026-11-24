@@ -14,7 +14,7 @@ import montar_lote as ml
 from fotos import PLANO, janelas, F
 
 AFOTO = 1150        # altura máxima da faixa da foto (px): desce até a altura da cabeça dela
-FUSAO = 300         # altura da emenda suave no pé da foto
+FUSAO = 70          # emenda BEM FININHA no pé da foto (ela: a de 300 px invadia a foto)
 DESCER = 60         # ela desce só um pouco: a cabeça entra NA FRENTE da parte de baixo da foto
 SAIDA = 0.5         # duração da animação de zoom na volta para a tela cheia
 

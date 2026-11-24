@@ -122,7 +122,7 @@ CORR_GERAL = [(de, para) for _, de, para in CORR] + [
  ("gostado que vem", "gostaram do-que veem"), ("do que vem", "do que veem"), ("medida e certa", "medida é-certa certa"),
  ("contornes mais", "contornos mais"), ("perfez em", "Perfis em"), ("quantas ml", "Quantos ml"),
  ("com o o metodo", "com o _ método"), ("de foto e de lado", "de foto _ de lado"), ("escondiam que ela", "escondiam o-que ela"),
- ("tirar a foto", "tirar _ foto"),
+ ("tirar a foto", "tirar _ foto"), ("entao vem um", "Então, veio um"), ("super especial casamento", "super especial, o-casamento"),
 ]
 
 
