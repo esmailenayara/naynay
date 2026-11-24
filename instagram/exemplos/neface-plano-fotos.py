@@ -21,7 +21,7 @@ Y_LEG_CARTAO = TOPO + AMAX + 90          # legenda logo abaixo do cartão
 RI = "Resultado imediato"
 # (começa na frase, termina na frase [None = fim], foto, foco: antes/depois/None, texto de baixo, título)
 PLANO = {
- "carla": [("10 8", "a carla chegou", "carla-2-lado-esq.jpg", None, None, None),
+ "carla": [("quantos ml", "a carla chegou", "carla-2-lado-esq.jpg", None, None, None),   # desde a pergunta (pedido dela)
            ("a carla chegou", "e eu utilizei", "carla-1-frente.jpg", "antes", None, None),
            ("e eu utilizei", "aqui eu preenchi", "carla-2-lado-esq.jpg", None, None, None),
            ("aqui eu preenchi", "e hoje", "carla-3-lado-dir.jpg", "depois", None, None),
