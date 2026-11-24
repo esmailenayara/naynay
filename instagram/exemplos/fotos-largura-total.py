@@ -16,6 +16,7 @@ from fotos import PLANO, janelas, F
 AFOTO = 1150        # altura máxima da faixa da foto (px): desce até a altura da cabeça dela
 FUSAO = 70          # emenda BEM FININHA no pé da foto (ela: a de 300 px invadia a foto)
 DESCER = 60         # ela desce só um pouco: a cabeça entra NA FRENTE da parte de baixo da foto
+POPUP = {"monique": [("entao", "e essa ultima", "monique-casamento.jpg")]}   # foto no meio, entra e sai com zoom
 SAIDA = 0.5         # duração da animação de zoom na volta para a tela cheia
 
 
@@ -25,6 +26,33 @@ def mascara_fusao(w, h, pasta, k):
         v = int(255 * (1 - (y - (h - FUSAO)) / FUSAO) ** 1.6)
         m.paste(v, (0, y, w, y + 1))
     m.save(f"{pasta}/mfus{k}.png")
+
+
+def aplicar_popup(nome, pasta, ws, total, video):
+    """Foto no meio da tela por cima do vídeo: entra com zoom (0,4 s), zoom suave, sai com zoom (0,35 s)."""
+    from PIL import Image, ImageDraw, ImageFilter
+    from fotos import achar
+    for k, (ini, fim, foto) in enumerate(POPUP[nome]):
+        a = achar(ws, ini); b = achar(ws, fim, a) - 0.05
+        im = Image.open(F + foto).convert("RGB"); L = 760; A = int(L * im.height / im.width)
+        im = im.resize((L, A), Image.LANCZOS); bd = 40
+        c = Image.new("RGBA", (L + 2 * bd, A + 2 * bd), (0, 0, 0, 0))
+        sombra = Image.new("RGBA", c.size, (0, 0, 0, 0))
+        ImageDraw.Draw(sombra).rounded_rectangle([bd, bd + 14, bd + L, bd + A + 14], 26, fill=(0, 0, 0, 120))
+        c = Image.alpha_composite(c, sombra.filter(ImageFilter.GaussianBlur(18)))
+        m = Image.new("L", (L, A), 0); ImageDraw.Draw(m).rounded_rectangle([0, 0, L - 1, A - 1], 26, fill=255)
+        c.paste(im, (bd, bd), m); c.save(f"{pasta}/popup{k}.png")
+        ent = f"clip((t-{a:.3f})/0.4\\,0\\,1)"; sai = f"clip(({b:.3f}-t)/0.35\\,0\\,1)"
+        z = f"((0.72+0.28*{ent}*(2-{ent}))*(1-0.18*(1-{sai}))*(1+0.04*clip((t-{a:.3f})/{b-a:.3f}\\,0\\,1)))"
+        fc = (f"[1:v]format=rgba,scale=w='trunc({c.width}*{z}/2)*2':h=-2:eval=frame:flags=lanczos,"
+              f"fade=t=in:st={a:.3f}:d=0.3:alpha=1,fade=t=out:st={b-0.3:.3f}:d=0.3:alpha=1[p];"
+              f"[0:v][p]overlay=x='(W-w)/2':y='780-h/2':enable='between(t,{a:.3f},{b:.3f})',format=yuv420p[v]")
+        tmp = video.replace(".mkv", "-tmp.mkv")
+        ml.sh("ffmpeg", "-v", "error", "-y", "-i", video, "-loop", "1", "-framerate", "30", "-i", f"{pasta}/popup{k}.png",
+              "-filter_complex", fc, "-map", "[v]", "-map", "0:a", "-t", f"{total:.3f}", "-r", "30", "-c:v", "libx264",
+              "-preset", "medium", "-crf", "12", "-c:a", "copy", tmp)
+        os.replace(tmp, video)
+        print(f"foto no meio: {foto} de {a:.1f}s a {b:.1f}s", flush=True)
 
 
 def aplicar(nome, exemplo=None):
@@ -62,6 +90,8 @@ def aplicar(nome, exemplo=None):
     if exemplo or not os.path.exists(saida_v) or os.environ.get("REFAZER_IMAGEM"):
       ml.sh("ffmpeg", "-v", "error", "-y", *ins, "-filter_complex", fc, "-map", "[v]", "-map", "0:a", *t_args,
           "-r", "30", "-c:v", "libx264", "-preset", "medium", "-crf", "12", "-c:a", "copy", saida_v)
+    if nome in POPUP:
+        aplicar_popup(nome, pasta, ws, total, saida_v)
     # legendas (mesma altura; ela desceu só 150 px) + textos da foto
     leg = ml.legendas(nome, [("ed", w) for w in ws], lambda f, t: t, total).split("\n")
     ts = lambda x: f"{int(x//3600)}:{int(x%3600//60):02d}:{x%60:05.2f}"

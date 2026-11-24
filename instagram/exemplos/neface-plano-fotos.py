@@ -31,7 +31,6 @@ PLANO = {
              ("reparem", "e voce", "juliana-perfil.jpg", "depois", RI, None)],
  "monique": [("3 anos", "ao longo", "monique-dia1-hoje.jpg", None, None, "Dia 1 → 3 anos depois"),
              ("ao longo", "entao", "monique-dia1-hoje.jpg", None, None, None),
-             ("entao", "e essa ultima", "monique-ultima-etapa.jpg", None, None, None),
              ("e essa ultima", "a harmonizacao", "monique-ultima-etapa.jpg", "depois", None, None)],
  "gabriela": [("ela nao queria", "e quem", "gabriela-mae.jpg", "antes", None, None),
               ("e com o meu", "e o resultado", "gabriela-mae.jpg", None, RI, None),
