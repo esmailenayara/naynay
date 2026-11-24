@@ -22,14 +22,14 @@ Y_FALA = 1430     # nestes vídeos ela aparece mais baixa: legenda na altura do 
 # arquivo, janelas a manter (None = tudo). Janelas tiram as tentativas repetidas.
 VIDEOS = {
  "carla":    [("v32", None), ("v31", None), ("v30", None), ("v29", None)],
- "juliana":  [("v20", None), ("v19", None), ("v18", None), ("v17", None), ("v16", None),
-              ("v15", [(4.2, 7.35), (28.0, 99)]), ("v14", None)],
- "monique":  [("v28", None), ("v27", None), ("v26", None), ("v25", [(28.4, 99)]),
-              ("v24", None), ("v23", None), ("v22", None), ("v21", [(0, 18.95)])],
+ "juliana":  [("v20", None), ("v19", None), ("v18", None), ("v17", None), ("v16", [(5.4, 99)]),
+              ("v15", [(4.2, 7.35), (28.0, 99)]), ("v14", [(13.0, 99)])],
+ "monique":  [("v28", None), ("v27", None), ("v26", [(14.1, 99)]), ("v25", [(28.4, 99)]),
+              ("v24", [(8.2, 99)]), ("v23", [(23.4, 99)]), ("v22", None), ("v21", [(0, 18.95)])],
  "gabriela": [("v13", None), ("v12", [(20.9, 99)]), ("v11", [(13.2, 99)]), ("v10", None), ("v09", None), ("v08", None)],
- "renata":   [("v07", None), ("v06", [(15.0, 99)]), ("v05", None), ("v04", [(4.95, 99)])],
+ "renata":   [("v07", None), ("v06", [(16.05, 99)]), ("v05", None), ("v04", [(6.5, 99)])],
  "julie":    [("v03", None), ("v02", [(31.1, 99)]), ("v01", [(24.3, 99)])],
- "final":    [("f5", None), ("f4", None), ("f2", [(8.6, 99)]), ("f1", [(0, 9.5), (23.5, 99)])],
+ "final":    [("f5", [(8.1, 99)]), ("f4", None), ("f2", [(8.6, 99)]), ("f1", [(0, 9.5), (23.5, 99)])],
 }
 # palavras de destaque (entram sozinhas, depois da frase)
 DESTAQUE = {

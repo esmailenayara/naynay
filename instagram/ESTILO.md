@@ -154,6 +154,11 @@ Regras:
   tentativa completa. A transcrição do arquivo bruto erra os tempos e esconde repetições, então
   **depois de cortar, transcreva de novo o vídeo já cortado** e leia procurando frases repetidas antes de
   seguir. As legendas saem dessa 2ª transcrição (tempos exatos). Ferramenta: `exemplos/lote-neface.py --corte`.
+  **A transcrição do vídeo inteiro NÃO pega começos interrompidos** ("E com... E com o meu método"):
+  ela "limpa" a repetição. Ela reclamou disso na Juliana. **Sempre** rode
+  `exemplos/ouvir-trechos.py <vídeo>`, que transcreve cada trecho entre silêncios separado, e leia
+  procurando frase cortada no meio ("...", palavra solta) seguida da frase inteira. Trechos de
+  menos de ~0,5 s que saem como "Método N.E. Face" são respiração/ruído (o Whisper repete a dica): corte também.
   Para achar a tentativa certa, transcreva **cada trecho de fala separado** (entre silêncios): mostra
   exatamente onde começa a última tentativa completa. Ao mudar as janelas de um vídeo, **apague os
   pedaços já renderizados** (`trechos/`, `corte.mkv`, `cortado.*`), senão os antigos são reaproveitados.
