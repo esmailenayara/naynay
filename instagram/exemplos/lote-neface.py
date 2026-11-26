@@ -33,7 +33,11 @@ PRE_PREENCH = ("curves=master='0/0 0.25/0.29 0.5/0.58 0.75/0.83 1/1':r='0/0 0.5/
 # puxa o tom 6° para o laranja, e metade disso nos amarelos
 SEL_G = ("format=gbrp,huesaturation=colors=r+m:saturation=-0.35:hue=6:strength=1,"
          "huesaturation=colors=y:saturation=-0.175:strength=1,format=rgb24,")
-ACAB_VIDEO = {"perfiloplastia": ACAB_E, "preenchimento": PRE_PREENCH + SEL_G + ACAB_E}
+# cor "K" (aprovada 26/11/2026, a G ficou vermelha e amarelada): menos saturação nos vermelhos/magentas
+# (-40%) e nos amarelos (-45%), e um toque frio
+SEL_K = ("format=gbrp,huesaturation=colors=r+m:saturation=-0.4:hue=4:strength=1,huesaturation=colors=y:saturation=-0.45:strength=1,"
+         "colorbalance=rm=-0.02:bm=0.03:rh=-0.01:bh=0.02,format=rgb24,")
+ACAB_VIDEO = {"perfiloplastia": ACAB_E, "preenchimento": PRE_PREENCH + SEL_K + ACAB_E}
 BRILHO = "0.88"   # cenário claro (parede e roupa brancas): 1,0 ficou "estourado" para ela
 Y_FALA = 1430     # nestes vídeos ela aparece mais baixa: legenda na altura do colo, nunca no rosto
 
