@@ -75,8 +75,9 @@ O que define o estilo:
    `-colorspace bt709 -color_primaries bt709 -color_trc bt709 -color_range tv`, `-crf 15 -preset slow`.
 
 - **Luz quente (escritório com estante/parede cinza, 26/11/2026):** a receita padrão deixou a pele dela
-  **vermelha demais**. Ela aprovou a cor **"C"**: na curva, vermelho `r='0/0 0.5/0.455 1/0.97'`, verde
-  `g='0/0 0.5/0.505 1/1'` e saturação 0,9 (`ACAB_C` em `exemplos/lote-neface.py`). Sempre confira a pele
+  **vermelha demais**. A cor "C" (vermelho `r='0/0 0.5/0.455 1/0.97'`, saturação 0,9) ainda deixou vermelho;
+  ela aprovou a **"E"**: `r='0/0 0.5/0.42 1/0.95'`, `g='0/0 0.5/0.51 1/1'`, `b='0/0 0.5/0.515 1/1'` e
+  saturação 0,82 (`ACAB_E` em `exemplos/lote-neface.py`). Mostre a pessoa de corpo inteiro na comparação. Sempre confira a pele
   num quadro ampliado do rosto antes de renderizar: se a razão R/G da pele passar de ~1,4, ela está vermelha.
 - Vídeo que **não** for HDR (sem `color_transfer=arib-std-b67` no ffprobe): pule o passo 1.
 - Se ela achar claro/escuro demais: o `npl` do passo 1 controla a exposição (200 = aprovado; maior =
@@ -168,7 +169,7 @@ Regras:
   **Nunca corte o fim de uma fala porque a transcrição saiu sem sentido** ("Método, Michelle, me vamos
   conversar" era "Me chama e vamos conversar", o convite final da Monique: ela reclamou do "corte
   bruto"). Na dúvida, transcreva o trecho com o modelo `medium` antes de decidir. Confira sempre o
-  **final de cada vídeo**: ele tem que terminar numa frase de fechamento, nunca no meio.
+  **final de cada vídeo** (o último trecho ganha 0,4 s de folga: a última palavra morre baixinho): ele tem que terminar numa frase de fechamento, nunca no meio.
   Para achar a tentativa certa, transcreva **cada trecho de fala separado** (entre silêncios): mostra
   exatamente onde começa a última tentativa completa. Ao mudar as janelas de um vídeo, **apague os
   pedaços já renderizados** (`trechos/`, `corte.mkv`, `cortado.*`), senão os antigos são reaproveitados.

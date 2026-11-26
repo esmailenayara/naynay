@@ -23,7 +23,9 @@ ACAB_C = ("curves=master='0/0 0.25/0.22 0.5/0.5 0.75/0.79 1/1':r='0/0 0.5/0.455 
           "format=gbrp,vignette=angle=0.45,split[_b][_g];[_g]curves=master='0/0 0.55/0.05 1/1',gblur=sigma=28[_g2];"
           "[_b][_g2]blend=all_mode=screen:all_opacity=0.15,format=rgb24,unsharp=5:5:0.6:5:5:0,"
           "scale=out_color_matrix=bt709:out_range=tv,format=yuv420p")
-ACAB_VIDEO = {"perfiloplastia": ACAB_C, "preenchimento": ACAB_C}
+# Cor "E" (aprovada 26/11/2026): a C ainda deixou a pele vermelha. Mais vermelho a menos, saturação 0,82.
+ACAB_E = ACAB_C.replace("r='0/0 0.5/0.455 1/0.97':g='0/0 0.5/0.505 1/1'", "r='0/0 0.5/0.42 1/0.95':g='0/0 0.5/0.51 1/1':b='0/0 0.5/0.515 1/1'").replace("eq=saturation=0.9,", "eq=saturation=0.82,")
+ACAB_VIDEO = {"perfiloplastia": ACAB_E, "preenchimento": ACAB_E}
 BRILHO = "0.88"   # cenário claro (parede e roupa brancas): 1,0 ficou "estourado" para ela
 Y_FALA = 1430     # nestes vídeos ela aparece mais baixa: legenda na altura do colo, nunca no rosto
 
@@ -79,6 +81,8 @@ def falas(f, janelas):
     P = json.load(open(f"audio/{f}.json"))
     reg = [r for r in reg if any(w["ini"] < r[1] and w["fim"] > r[0] for w in P)]
     seg = [[max(0, a - 0.08), min(dur, b + 0.10)] for a, b in reg]
+    if seg:   # fim do arquivo: a última palavra costuma morrer baixinho (abaixo de -30 dB); folga de 0,4 s
+        seg[-1][1] = min(dur, seg[-1][1] + 0.4)
     if janelas:
         out = []
         for a, b in seg:
