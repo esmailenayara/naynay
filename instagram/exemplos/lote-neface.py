@@ -25,7 +25,11 @@ ACAB_C = ("curves=master='0/0 0.25/0.22 0.5/0.5 0.75/0.79 1/1':r='0/0 0.5/0.455 
           "scale=out_color_matrix=bt709:out_range=tv,format=yuv420p")
 # Cor "E" (aprovada 26/11/2026): a C ainda deixou a pele vermelha. Mais vermelho a menos, saturação 0,82.
 ACAB_E = ACAB_C.replace("r='0/0 0.5/0.455 1/0.97':g='0/0 0.5/0.505 1/1'", "r='0/0 0.5/0.42 1/0.95':g='0/0 0.5/0.51 1/1':b='0/0 0.5/0.515 1/1'").replace("eq=saturation=0.9,", "eq=saturation=0.82,")
-ACAB_VIDEO = {"perfiloplastia": ACAB_E, "preenchimento": ACAB_E}
+# preenchimento: luz mais escura e mais vermelha que a da perfiloplastia; ajuste antes da cor E para a pele
+# ficar no mesmo tom da perfiloplastia aprovada (pele ~ R/G 1,25-1,30)
+PRE_PREENCH = ("curves=master='0/0 0.25/0.29 0.5/0.58 0.75/0.83 1/1':r='0/0 0.5/0.47 1/0.98':"
+               "g='0/0 0.5/0.53 1/1':b='0/0 0.5/0.53 1/1',")
+ACAB_VIDEO = {"perfiloplastia": ACAB_E, "preenchimento": PRE_PREENCH + ACAB_E}
 BRILHO = "0.88"   # cenário claro (parede e roupa brancas): 1,0 ficou "estourado" para ela
 Y_FALA = 1430     # nestes vídeos ela aparece mais baixa: legenda na altura do colo, nunca no rosto
 
