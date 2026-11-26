@@ -31,6 +31,14 @@ while True:
     if len(bv) < W * H * 3 or len(bm) < W * H: break
     f = np.frombuffer(bv, np.uint8).reshape(H, W, 3).astype(np.float32)
     m = np.frombuffer(bm, np.uint8).reshape(H, W).astype(np.float32) / 255
+    # fica só com a PESSOA (a maior mancha da máscara): faixas da parede, quadros etc. que o recorte
+    # confundiu com ela eram deixados nítidos e viravam uma "linha" ao lado do rosto
+    pq = cv2.resize((m > 0.5).astype(np.uint8), (W // 4, H // 4), interpolation=cv2.INTER_NEAREST)
+    n, rot, est, _ = cv2.connectedComponentsWithStats(pq, 8)
+    if n > 2:
+        maior = 1 + int(np.argmax(est[1:, cv2.CC_STAT_AREA]))
+        manter = cv2.dilate((rot == maior).astype(np.uint8), np.ones((5, 5), np.uint8))
+        m = m * cv2.resize(manter, (W, H), interpolation=cv2.INTER_NEAREST).astype(np.float32)
     fundo_peso = cv2.resize(1 - cv2.dilate(m, np.ones((15, 15), np.uint8)), pequeno, interpolation=cv2.INTER_AREA)
     fp = cv2.resize(f, pequeno, interpolation=cv2.INTER_AREA) * fundo_peso[..., None]
     s = sigma / 4
