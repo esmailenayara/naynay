@@ -29,6 +29,8 @@ VIDEOS = {
  "gabriela": [("v13", None), ("v12", [(20.9, 99)]), ("v11", [(13.2, 99)]), ("v10", None), ("v09", None), ("v08", None)],
  "renata":   [("v07", None), ("v06", [(16.05, 99)]), ("v05", None), ("v04", [(6.5, 99)])],
  "julie":    [("v03", None), ("v02", [(31.1, 99)]), ("v01", [(24.3, 99)])],
+ "perfiloplastia": [("n1", None)],
+ "preenchimento": [("n2", None)],
  "final":    [("f5", [(8.1, 99)]), ("f4", None), ("f2", [(8.6, 99)]), ("f1", [(0, 9.5), (23.5, 99)])],
 }
 # palavras de destaque (entram sozinhas, depois da frase)
@@ -39,6 +41,8 @@ DESTAQUE = {
  "gabriela": ["tirar foto", "se ver", "ne face", "se gostar"],
  "renata": ["peso", "leve", "ne face", "pesou"],
  "julie": ["oculos escuros", "ne face", "leveza", "acessorio"],
+ "perfiloplastia": ["perfiloplastia", "equilibrio", "queixo", "individualizada", "harmonia"],
+ "preenchimento": ["inchado", "fofao", "sustentacao", "anatomia", "quando parar", "se reconhecer"],
  "final": ["mudanca", "seguras", "ne face", "17 ml", "consulta", "para voce"],
 }
 # correções do texto da legenda: (arquivo, sequência como foi transcrita) -> sequência certa (mesmo nº de palavras)
@@ -125,7 +129,7 @@ CORR_GERAL = [(de, para) for _, de, para in CORR] + [
  ("gostado que vem", "gostaram do-que veem"), ("do que vem", "do que veem"), ("medida e certa", "medida é-certa certa"),
  ("contornes mais", "contornos mais"), ("perfez em", "Perfis em"), ("quantas ml", "Quantos ml"),
  ("com o o metodo", "com o _ método"), ("de foto e de lado", "de foto _ de lado"), ("escondiam que ela", "escondiam o-que ela"),
- ("tirar a foto", "tirar _ foto"), ("entao vem um", "Então, veio um"), ("michel me vamos conversar", "Me chama e-vamos conversar."), ("michelin me vamos conversar", "Me chama e-vamos conversar."), ("super especial casamento", "super especial, o-casamento"),
+ ("tirar a foto", "tirar _ foto"), ("nao gosta de tirar fatia", "Não gosto de tirar foto"), ("nao gosta de mirar", "não gosto de me-olhar"), ("lábio e mesmo", "lábio e mento."), ("labio e mesmo", "lábio e mento."), ("tres pao", "três pontos"), ("3 pao", "três pontos"), ("sonônimo", "sinônimo"), ("sonorio de", "sinônimo de"), ("de fofo na", "de fofão na"), ("sononimo", "sinônimo"), ("acido aluronico", "ácido hialurônico"), ("o astroluronico", "o ácido-hialurônico"), ("pedas de", "perdas de"), ("espectro de fofao", "aspecto de fofão"), ("na fase", "na face"), ("nao gosta de tirar pato", "Não gosto de tirar foto"), ("entao vem um", "Então, veio um"), ("michel me vamos conversar", "Me chama e-vamos conversar."), ("michelin me vamos conversar", "Me chama e-vamos conversar."), ("super especial casamento", "super especial, o-casamento"),
 ]
 
 
