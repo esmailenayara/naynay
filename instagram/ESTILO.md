@@ -74,6 +74,10 @@ O que define o estilo:
 4. **Exportar como vídeo NORMAL (SDR bt709), nunca marcado como HDR:**
    `-colorspace bt709 -color_primaries bt709 -color_trc bt709 -color_range tv`, `-crf 15 -preset slow`.
 
+- **Luz quente (escritório com estante/parede cinza, 26/11/2026):** a receita padrão deixou a pele dela
+  **vermelha demais**. Ela aprovou a cor **"C"**: na curva, vermelho `r='0/0 0.5/0.455 1/0.97'`, verde
+  `g='0/0 0.5/0.505 1/1'` e saturação 0,9 (`ACAB_C` em `exemplos/lote-neface.py`). Sempre confira a pele
+  num quadro ampliado do rosto antes de renderizar: se a razão R/G da pele passar de ~1,4, ela está vermelha.
 - Vídeo que **não** for HDR (sem `color_transfer=arib-std-b67` no ffprobe): pule o passo 1.
 - Se ela achar claro/escuro demais: o `npl` do passo 1 controla a exposição (200 = aprovado; maior =
   mais escuro, ex.: 260). Mostre opções em imagem antes de renderizar tudo.

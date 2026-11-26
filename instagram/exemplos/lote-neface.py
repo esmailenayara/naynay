@@ -16,6 +16,14 @@ ACAB = ("curves=master='0/0 0.25/0.22 0.5/0.5 0.75/0.79 1/1',colorbalance=rm=0.0
         "format=gbrp,vignette=angle=0.45,split[_b][_g];[_g]curves=master='0/0 0.55/0.05 1/1',gblur=sigma=28[_g2];"
         "[_b][_g2]blend=all_mode=screen:all_opacity=0.15,format=rgb24,unsharp=5:5:0.6:5:5:0,"
         "scale=out_color_matrix=bt709:out_range=tv,format=yuv420p")
+# Cor "C" (aprovada 26/11/2026) para vídeos gravados no escritório de luz quente (perfiloplastia, preenchimento):
+# a receita padrão deixava a pele VERMELHA demais. Tira vermelho nos meios-tons e 10% de saturação.
+ACAB_C = ("curves=master='0/0 0.25/0.22 0.5/0.5 0.75/0.79 1/1':r='0/0 0.5/0.455 1/0.97':g='0/0 0.5/0.505 1/1',"
+          "format=yuv420p,eq=saturation=0.9,format=rgb24,"
+          "format=gbrp,vignette=angle=0.45,split[_b][_g];[_g]curves=master='0/0 0.55/0.05 1/1',gblur=sigma=28[_g2];"
+          "[_b][_g2]blend=all_mode=screen:all_opacity=0.15,format=rgb24,unsharp=5:5:0.6:5:5:0,"
+          "scale=out_color_matrix=bt709:out_range=tv,format=yuv420p")
+ACAB_VIDEO = {"perfiloplastia": ACAB_C, "preenchimento": ACAB_C}
 BRILHO = "0.88"   # cenário claro (parede e roupa brancas): 1,0 ficou "estourado" para ela
 Y_FALA = 1430     # nestes vídeos ela aparece mais baixa: legenda na altura do colo, nunca no rosto
 
@@ -185,7 +193,7 @@ def montar(nome):
     partes = VIDEOS[nome]
     # cor: mesma sessão de gravação -> um ajuste por vídeo, calculado no arquivo mais longo
     maior = max(partes, key=lambda p: os.path.getsize(f"brutos/{p[0]}.bin"))[0]
-    cor = f"{TOM},{ACAB}"
+    cor = f"{TOM},{ACAB_VIDEO.get(nome, ACAB)}"
     SEG = {f: falas(f, j) for f, j in partes}
     lista, gi = [], 0
     for f, _ in partes:
