@@ -37,7 +37,8 @@ SEL_G = ("format=gbrp,huesaturation=colors=r+m:saturation=-0.35:hue=6:strength=1
 # (-40%) e nos amarelos (-45%), e um toque frio
 SEL_K = ("format=gbrp,huesaturation=colors=r+m:saturation=-0.4:hue=4:strength=1,huesaturation=colors=y:saturation=-0.45:strength=1,"
          "colorbalance=rm=-0.02:bm=0.03:rh=-0.01:bh=0.02,format=rgb24,")
-ACAB_VIDEO = {"perfiloplastia": ACAB_E, "preenchimento": PRE_PREENCH + SEL_K + ACAB_E}
+CORDAO = {"preenchimento": ["cordao=270:390"]}   # cordão pendurado atrás dela (ver desfoque.py)
+ACAB_VIDEO = {"perfiloplastia": ACAB_E, "preenchimento": PRE_PREENCH + SEL_G + ACAB_E}
 BRILHO = "0.88"   # cenário claro (parede e roupa brancas): 1,0 ficou "estourado" para ela
 Y_FALA = 1430     # nestes vídeos ela aparece mais baixa: legenda na altura do colo, nunca no rosto
 
@@ -252,7 +253,7 @@ def montar(nome):
     com = f"{pasta}/com-fundo.mkv"
     if not os.path.exists(com):
         os.path.exists(f"{pasta}/mascara.mkv") or sh("python3", "-I", f"{IG}/recorte.py", corte, f"{pasta}/mascara.mkv")
-        sh("python3", "-I", f"{IG}/desfoque.py", corte, f"{pasta}/mascara.mkv", f"{pasta}/fundo.mkv", "10")
+        sh("python3", "-I", f"{IG}/desfoque.py", corte, f"{pasta}/mascara.mkv", f"{pasta}/fundo.mkv", "10", *CORDAO.get(nome, []))
         sh("ffmpeg", "-v", "error", "-y", "-i", f"{pasta}/fundo.mkv", "-i", corte, "-map", "0:v", "-map", "1:a", "-c", "copy", com)
         os.remove(f"{pasta}/fundo.mkv")
     total = float(saida("ffprobe", "-v", "error", "-show_entries", "format=duration", "-of", "csv=p=0", com))

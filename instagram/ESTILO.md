@@ -79,9 +79,12 @@ O que define o estilo:
   ela aprovou a **"E"**: `r='0/0 0.5/0.42 1/0.95'`, `g='0/0 0.5/0.51 1/1'`, `b='0/0 0.5/0.515 1/1'` e
   saturação 0,82 (`ACAB_E` em `exemplos/lote-neface.py`). Mostre a pessoa de corpo inteiro na comparação.
   Se ainda achar vermelho, tire saturação **só dos vermelhos/magentas** (`huesaturation=colors=r+m:saturation=-0.35:hue=6`,
-  cor "G"; no preenchimento ela ainda achou vermelho E amarelado e aprovou a "K": vermelhos/magentas -40%, amarelos -45% e `colorbalance=rm=-0.02:bm=0.03:rh=-0.01:bh=0.02`). Os números da pele podem "bater" e ela continuar vendo
+  cor "G"; no preenchimento testamos também a "K" (vermelhos/magentas -40%, amarelos -45% e `colorbalance=rm=-0.02:bm=0.03:rh=-0.01:bh=0.02`), mas no fim ela preferiu a **G**). Os números da pele podem "bater" e ela continuar vendo
   vermelho nas bochechas e no nariz: o que vale é o olho dela, então mostre a comparação. Sempre confira a pele
   num quadro ampliado do rosto antes de renderizar: se a razão R/G da pele passar de ~1,4, ela está vermelha.
+- **"Linha" ao lado da cabeça:** se aparecer uma linha fina e nítida junto do cabelo, quase sempre é algo
+  do cenário (cordão, corrente, friso) que encosta nela e o recorte trata como contorno do cabelo. Use a opção
+  `cordao=X0:X1` do `desfoque.py` (colunas onde o objeto está) e confira quadros ampliados da cabeça.
 - Vídeo que **não** for HDR (sem `color_transfer=arib-std-b67` no ffprobe): pule o passo 1.
 - Se ela achar claro/escuro demais: o `npl` do passo 1 controla a exposição (200 = aprovado; maior =
   mais escuro, ex.: 260). Mostre opções em imagem antes de renderizar tudo.
