@@ -85,6 +85,9 @@ O que define o estilo:
 - **"Linha" ao lado da cabeça:** se aparecer uma linha fina e nítida junto do cabelo, quase sempre é algo
   do cenário (cordão, corrente, friso) que encosta nela e o recorte trata como contorno do cabelo. Use a opção
   `cordao=X0:X1` do `desfoque.py` (colunas onde o objeto está) e confira quadros ampliados da cabeça.
+- **Rosto "em onda" na lateral / brinco meio transparente:** o recorte falha no brinco e na mandíbula e o
+  desfoque aparece por dentro dela. O `desfoque.py` agora tapa esses buracos sozinho; sempre confira a
+  lateral do rosto em quadros ampliados (principalmente com brinco) comparando com o vídeo original.
 - Vídeo que **não** for HDR (sem `color_transfer=arib-std-b67` no ffprobe): pule o passo 1.
 - Se ela achar claro/escuro demais: o `npl` do passo 1 controla a exposição (200 = aprovado; maior =
   mais escuro, ex.: 260). Mostre opções em imagem antes de renderizar tudo.

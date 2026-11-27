@@ -26,7 +26,7 @@ cordao = next((tuple(int(v) for v in e.split("=")[1].split(":")) for e in extras
 
 
 def tirar_cordao(f, m):
-    """Zera a máscara onde o cordão aparece E a borda do recorte está em cima dele (orelha/cabelo ficam)."""
+    """Devolve um mapa (1 = manter, 0 = é conta do cordão) para multiplicar a máscara."""
     x0, x1 = cordao
     g = cv2.cvtColor(f.astype(np.uint8), cv2.COLOR_RGB2GRAY).astype(np.float32)
     hp = cv2.blur(np.abs(g - cv2.blur(g, (1, 9))), (5, 1))       # contas = muita variação na vertical
@@ -50,10 +50,12 @@ def tirar_cordao(f, m):
     # apagar tudo à esquerda cortava a testa dela quando o rosto encostava no cordão
     a0, a1 = xc - 8, xc + 6
     hsv = cv2.cvtColor(f[:, a0:a1].astype(np.uint8), cv2.COLOR_RGB2HSV)
-    conta = ((hsv[..., 1] < 80) | (hsv[..., 2] < 60)).astype(np.float32)
-    conta = cv2.dilate(conta, np.ones((3, 3), np.uint8))
-    m[:, a0:a1] *= 1 - conta * lin[:, None]
-    return m
+    # conta = sem cor de pele E com textura de contas no próprio pixel (o brinco é liso por dentro)
+    conta = ((hsv[..., 1] < 80) | (hsv[..., 2] < 60)) & (cv2.blur(hp[:, a0:a1], (1, 9)) > 8)
+    conta = cv2.dilate(conta.astype(np.uint8), np.ones((5, 3), np.uint8)).astype(np.float32)
+    k = np.ones((H, W), np.float32)
+    k[:, a0:a1] = 1 - conta * lin[:, None]
+    return k
 W, H = 1080, 1920
 info = subprocess.run(["ffprobe", "-v", "error", "-select_streams", "v", "-show_entries", "stream=width,height",
                        "-of", "csv=p=0", ent], capture_output=True, text=True).stdout.split(",")
@@ -68,7 +70,15 @@ while True:
     if len(bv) < W * H * 3 or len(bm) < W * H: break
     f = np.frombuffer(bv, np.uint8).reshape(H, W, 3).astype(np.float32)
     m = np.frombuffer(bm, np.uint8).reshape(H, W).astype(np.float32) / 255
-    if cordao: m = tirar_cordao(f, m.copy())
+    # tapa "buracos" e falhas do recorte no contorno dela (brinco, mandíbula, orelha): sem isso o desfoque
+    # aparece por dentro e o rosto fica "em onda" (vídeo do preenchimento, ~38 s)
+    k = tirar_cordao(f, m) if cordao else None
+    if k is not None: m = m * k          # tira o cordão ANTES de tapar buracos (senão o vão até o cabelo fecha)
+    sol = cv2.morphologyEx((m > 0.3).astype(np.uint8), cv2.MORPH_CLOSE, cv2.getStructuringElement(cv2.MORPH_ELLIPSE, (15, 15)))
+    cont, _ = cv2.findContours(sol, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+    sol = cv2.drawContours(np.zeros_like(sol), cont, -1, 1, cv2.FILLED)
+    m = np.maximum(m, cv2.GaussianBlur(cv2.erode(sol, np.ones((5, 5), np.uint8)).astype(np.float32), (0, 0), 2))
+    if k is not None: m = m * k
     # fica só com a PESSOA (a maior mancha da máscara): faixas da parede, quadros etc. que o recorte
     # confundiu com ela eram deixados nítidos e viravam uma "linha" ao lado do rosto
     pq = cv2.resize((m > 0.5).astype(np.uint8), (W // 4, H // 4), interpolation=cv2.INTER_NEAREST)
