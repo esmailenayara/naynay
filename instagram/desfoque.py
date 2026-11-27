@@ -34,11 +34,25 @@ def tirar_cordao(f, m):
     vis = cv2.blur(hp[:, xc - 3:xc + 4].mean(1, keepdims=True), (1, 31)).ravel()
     viz = cv2.blur(np.concatenate([hp[:, xc - 30:xc - 12], hp[:, xc + 12:xc + 30]], 1).mean(1, keepdims=True), (1, 31)).ravel()
     lin = (vis > 6) & (vis > 2.2 * viz)
+    # e as contas se repetem a cada 5-10 px na vertical (sobrancelha, brinco e borda do rosto, não)
+    sg = g[:, xc - 2:xc + 3].mean(1); sg = sg - cv2.blur(sg[:, None], (1, 15)).ravel()
+    jan = lambda v: cv2.blur(v[:, None].astype(np.float32), (1, 33)).ravel()
+    e = jan(sg * sg) + 1e-3
+    per = np.max([jan(np.concatenate([sg[:-L] * sg[L:], np.zeros(L)])) / e for L in range(5, 11)], 0)
+    lin &= per > 0.45
+    # fecha buracos curtos (fios de cabelo passando na frente de um pedaço do cordão)
+    lin = cv2.morphologyEx(lin.astype(np.uint8)[:, None], cv2.MORPH_CLOSE, np.ones((61, 1), np.uint8)).ravel().astype(bool)
     faixa = m[:, max(xc - 60, 0):xc + 13] > 0.5
     borda = np.where(faixa.any(1), faixa.argmax(1) + max(xc - 60, 0), 10**6)   # 1ª coluna dela em cada linha
     lin &= borda >= xc - 12
     lin = cv2.dilate(lin.astype(np.uint8)[:, None], np.ones((9, 1), np.uint8)).ravel().astype(bool)
-    m[lin, :xc + 9] = 0
+    # apaga SÓ a faixa estreita do cordão e só nos pixels sem cor de pele (contas cinza/branco/preto):
+    # apagar tudo à esquerda cortava a testa dela quando o rosto encostava no cordão
+    a0, a1 = xc - 8, xc + 6
+    hsv = cv2.cvtColor(f[:, a0:a1].astype(np.uint8), cv2.COLOR_RGB2HSV)
+    conta = ((hsv[..., 1] < 80) | (hsv[..., 2] < 60)).astype(np.float32)
+    conta = cv2.dilate(conta, np.ones((3, 3), np.uint8))
+    m[:, a0:a1] *= 1 - conta * lin[:, None]
     return m
 W, H = 1080, 1920
 info = subprocess.run(["ffprobe", "-v", "error", "-select_streams", "v", "-show_entries", "stream=width,height",
